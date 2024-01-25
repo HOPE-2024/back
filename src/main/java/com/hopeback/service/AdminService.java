@@ -20,7 +20,6 @@ public class AdminService {
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
 
-
 //모든 회원 조회
     public List<MemberResDto> selectMemberList() {
         List<Member> members = memberRepository.findAll();
