@@ -54,7 +54,24 @@ public class ChatRoomResDto {
         } else {
             //입장과 퇴장이 아닌 경우 => 메세지를 보내는 경우 => 보낼 때 마다 메세지 저장
             chatService.saveMsg(chatMsg.getRoomId(), chatMsg.getSender(), chatMsg.getMsg());
+            log.debug("메세지 받음 : " + chatMsg.getMsg());
+        }
+        sendMsg(chatMsg, chatService);
+    }
 
+    //채팅방 세션 제거
+    public void handleSessionClosed(WebSocketSession session, ChatService chatService) {
+        sessions.remove(session);
+        log.debug("세션 종료 : " + session);
+    }
+
+    private <T> void sendMsg(T msg, ChatService chatService){
+        for(WebSocketSession session : sessions) {
+            try {
+                chatService.sendMsg(session, msg);
+            } catch (Exception e) {
+                log.error("에러 메세지 ChatRoomResDto: ", e);
+            }
         }
     }
 }
