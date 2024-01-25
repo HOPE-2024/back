@@ -17,7 +17,7 @@ public class Member {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String member_Id;
+    private String memberId;
 
     @Column(nullable = false)
     private String password;
@@ -25,7 +25,7 @@ public class Member {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String nickName;
 
     @Column(nullable = false)
@@ -34,7 +34,7 @@ public class Member {
     @Column(nullable = false)
     private String phone;
 
-    private int active;
+    private Integer active;
     private LocalDateTime active_date;
 
     @Enumerated(EnumType.STRING)
@@ -43,8 +43,8 @@ public class Member {
 
     // jwt를 위한 빌더 패턴 사용
     @Builder
-    public Member(String member_Id, String password, String name, String nickName, String email, String phone, int active, Authority authority) {
-        this.member_Id = member_Id;
+    public Member(String memberId, String password, String name, String nickName, String email, String phone, int active, Authority authority) {
+        this.memberId = memberId;
         this.password = password;
         this.name = name;
         this.nickName = nickName;

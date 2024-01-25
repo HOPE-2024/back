@@ -19,13 +19,13 @@ import java.time.LocalDateTime;
 public class MemberDto {
     // 클라이언트에세 전송하기 위한 용도
     private Long id;
-    private String member_Id;
+    private String memberId;
     private String password;
     private String name;
     private String nickName;
     private String email;
     private String phone;
-    private int active;
+    private Integer active;
     private LocalDateTime active_date;
     @Enumerated(EnumType.STRING)
     private Authority authority;

@@ -14,21 +14,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class MemberReqDto {
     // 회원가입 요청 등 클라이언트로부터 전달된 데이터를 받음
     private Long id;
-    private String member_Id;
+    private String memberId;
     private String password;
     private String name;
     private String email;
+    private String nickName;
     private String phone;
 
     // MemberResDto -> Member
     public Member toEntity(PasswordEncoder passwordEncoder){  // 비밀번호 암호화
         return Member.builder()
-                .member_Id(member_Id)
+                .memberId(memberId)
                 .password(passwordEncoder.encode(password)) // 암호화
                 .name(name)
                 .email(email)
+                .nickName(nickName)
                 .phone(phone)
-                .authority(Authority.ROLE_USER)
+                .authority(Authority.MEMBER)
                 .build();
     }
 
