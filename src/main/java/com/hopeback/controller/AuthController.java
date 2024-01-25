@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/auth")
@@ -19,6 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
     private final MemberService memberService;
+
+    // 중복 체크
+    @PostMapping("/isUnique")
+    public ResponseEntity<Boolean> isUnique(@RequestBody Map<String, String> dataMap) {
+        int type = Integer.parseInt(dataMap.get("type"));
+        return ResponseEntity.ok(authService.checkUnique(type, dataMap.get("data")));
+    }
 
     // 회원 가입
     @PostMapping("/signup")

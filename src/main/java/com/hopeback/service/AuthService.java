@@ -18,6 +18,22 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // 중복 체크(id, nickName)
+    public Boolean checkUnique(int type, String info) {
+        boolean isUnique;
+        switch (type) {
+            case 0:
+                isUnique = memberRepository.existsByMemberId(info);
+                break;
+            case 1:
+                isUnique = memberRepository.existsByNickName(info);
+                break;
+            default: isUnique = true; log.info("중복 체크 잘못 됨!!");
+        }
+        return isUnique;
+    }
+
+
     // 회원 가입
     public MemberResDto signup(MemberReqDto memberReqDto) {
         if (memberRepository.existsByMemberId(memberReqDto.getMemberId())) {
