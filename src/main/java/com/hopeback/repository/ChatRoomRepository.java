@@ -1,4 +1,8 @@
 package com.hopeback.repository;
 
-public class ChatRoomRepository {
+import com.hopeback.entity.chat.ChatRoom;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ChatRoomRepository extends JpaRepository<ChatRoom,String> {
+
 }
