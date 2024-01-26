@@ -27,7 +27,8 @@ public class JwtFilter extends OncePerRequestFilter { // OncePerRequestFilter : 
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {  // 토큰이 있고 Bearer 접두사가 있다면
             return bearerToken.substring(7);  // 접두사를 제거한 토큰 문자열을 반환. 첫번째 글자는 0, 7부터 끝까지 선택
         }
-        return bearerToken;
+        // 접두사가 없거나 Bearer 접두사가 없으면 null을 반환. 오직 Bearer 접두사가 붙은 토큰만을 처리
+        return null;
     }
 
     // jwt 토큰 검증 및 인증 처리 수행하는 메서드. 실제 필터 작업을 수행함

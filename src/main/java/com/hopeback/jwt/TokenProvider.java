@@ -15,7 +15,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
-import java.rmi.server.ExportException;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -133,6 +132,7 @@ public class TokenProvider {
 
     // access 토큰 재발급
     public String generateAccessToken(Authentication authentication) {
+        // generateTokenDto 메서드를 사용하여 액세스 토큰을 생성하고 그 결과로 얻은 tokenDto 객체에서 액세스 토큰을 가져와서 반환.
         return generateTokenDto(authentication).getAccessToken();
     }
 

@@ -1,4 +1,4 @@
-package com.hopeback.service;
+package com.hopeback.service.jwt;
 
 import com.hopeback.dto.member.MemberReqDto;
 import com.hopeback.dto.member.MemberResDto;

@@ -2,7 +2,7 @@ package com.hopeback.controller;
 
 import com.hopeback.dto.member.MemberReqDto;
 import com.hopeback.dto.member.MemberResDto;
-import com.hopeback.service.AuthService;
+import com.hopeback.service.jwt.AuthService;
 import com.hopeback.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
