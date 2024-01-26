@@ -3,6 +3,7 @@ package com.hopeback.dto.member;
 import com.hopeback.constant.Authority;
 import com.hopeback.entity.member.Member;
 import lombok.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
@@ -33,5 +34,7 @@ public class MemberReqDto {
                 .authority(Authority.MEMBER)
                 .build();
     }
-
+    public UsernamePasswordAuthenticationToken toAuthentication() {
+        return new UsernamePasswordAuthenticationToken(memberId, password);
+    }
 }
