@@ -19,7 +19,7 @@ public class MemberResDto {
     private String nickName;
     private String email;
     private String phone;
-    private Integer active;
+    private String active;
     private LocalDateTime active_date;
 
     // Member -> MemberResDto
