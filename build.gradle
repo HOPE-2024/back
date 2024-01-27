@@ -46,6 +46,9 @@ dependencies {
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
+	// 엘라스틱서치
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.17.12'
 }
 
 tasks.named('bootBuildImage') {
