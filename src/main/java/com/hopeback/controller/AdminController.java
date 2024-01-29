@@ -1,5 +1,6 @@
 package com.hopeback.controller;
 
+import com.hopeback.dto.admin.ReportDto;
 import com.hopeback.dto.member.MemberResDto;
 import com.hopeback.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +51,28 @@ public class AdminController {
         return ResponseEntity.ok(list);
     }
 
+
+    // 모든 신고 목록 조회
+    @GetMapping("/report")
+    public ResponseEntity<List<ReportDto>> selectReportList() {
+        List<ReportDto> list = adminService.selectReportList();
+        return ResponseEntity.ok(list);
+    }
+
+    // 신고 삭제
+    @PostMapping("/deletereport")
+    public ResponseEntity<Boolean>  deleteReport(@RequestParam Long id) {
+        Boolean list= adminService.deleteReport(id);
+        return ResponseEntity.ok(list);
+    }
+
+
+
+    // 신고 상태 변경(읽음)
+    @PostMapping("/updateReportStatus")
+    public ResponseEntity<Boolean>  updateReportStatus(@RequestParam Long id) {
+        Boolean list= adminService.updateReportStatus(id);
+        return ResponseEntity.ok(list);
+    }
 }
 
