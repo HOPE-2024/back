@@ -41,6 +41,5 @@ public class AuthController {
         System.out.println("회원 ID : " + memberReqDto.getMemberId() );
         return ResponseEntity.ok(authService.login(memberReqDto));
     }
-
 }
 

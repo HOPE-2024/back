@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +40,9 @@ public class AuthService {
             case 1:
                 isUnique = memberRepository.existsByNickName(info);
                 break;
-            default: isUnique = true; log.info("중복 체크 잘못 됨!!");
+            default:
+                isUnique = true;
+                log.info("중복 체크 잘못 됨!!");
         }
         return isUnique;
     }
@@ -59,37 +62,47 @@ public class AuthService {
         UsernamePasswordAuthenticationToken authenticationToken = memberReqDto.toAuthentication();
         log.info("authenticationToken : {}", authenticationToken);
 
-                // 인증 성공시 Authentication 객체 반환됨
-                Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-                log.info("authentication 객체: {}", authentication);
-                // 인증 정보를 바탕으로 토큰 생성, TokenDto에 생성된 토큰 정보 들어있음
-                TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+        // 인증 성공시 Authentication 객체 반환됨
+        Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+        log.info("authentication 객체: {}", authentication);
+        // 인증 정보를 바탕으로 토큰 생성, TokenDto에 생성된 토큰 정보 들어있음
+        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        log.warn("zzzzzzzzzzz" + String.valueOf(userDetails));
 
-                // refreshToken DB에 저장을 위해 사용자 ID를 사용하여 데이터베이스에서 해당 사용자를 조회
-                Member member = memberRepository.findByMemberId(memberReqDto.getMemberId())
-                        .orElseThrow(() -> new RuntimeException("존재하지 않은 아이디 입니다."));
+        // refreshToken DB에 저장을 위해 사용자 ID를 사용하여 데이터베이스에서 해당 사용자를 조회
+        // userDetails.getUsername() : memberId (aaa 같은)
+        String username = userDetails.getUsername();
+        Member member = memberRepository.findByMemberId(username)
+                .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+        log.warn("조회된 회원 : " + member);
 
-                // 조회된 회원을 기반으로 리프레시 토큰 DB 저장, 이미 존재하는 경우에는 갱신
-                String refreshToken = tokenDto.getRefreshToken();
-                RefreshToken retriedRefreshToken = refreshTokenRepository
-                        .findByMember(member)
-                        .orElse(null);
-                if (retriedRefreshToken == null) {
-                    RefreshToken newRefreshToken = RefreshToken.builder()
-                            .accessToken(tokenDto.getAccessToken())  // 액세스 토큰 저장
-                            .accessTokenExpiresIn(tokenDto.getAccessTokenExpiresIn())
-                            .refreshToken(refreshToken)
-                            .refreshTokenExpiresIn(tokenDto.getRefreshTokenExpiresIn())
-                            .member(member)
-                            .build();
-                    refreshTokenRepository.save(newRefreshToken);
-                } else {
-                    log.info("이미 존재하는 리프레시 토큰: {}", retriedRefreshToken.getRefreshToken());
-                    retriedRefreshToken.update(refreshToken, tokenDto.getRefreshTokenExpiresIn());
-                    log.info("새로 받은 리프레시 토큰 : {}", refreshToken);
-                }
-                // 생성된 토큰 반환
-                return tokenDto;
+        // 조회된 회원을 기반으로 리프레시 토큰 DB 저장, 이미 존재하는 경우에는 갱신
+        String refreshToken = tokenDto.getRefreshToken();
+        RefreshToken retriedRefreshToken = refreshTokenRepository
+                .findByMember(member)
+                .orElse(null);
+
+        if (retriedRefreshToken == null) {
+            // 리프레시 토큰 존재X, 새로 발급
+            RefreshToken newRefreshToken = RefreshToken.builder()
+                    .refreshToken(refreshToken)
+                    .refreshTokenExpiresIn(tokenDto.getRefreshTokenExpiresIn())
+                    .member(member)
+                    .build();
+            refreshTokenRepository.save(newRefreshToken);
+            log.warn("리프레시 토큰 새로 발급~");
+
+        } else {
+            // 갱신
+            log.info("이미 존재하는 리프레시 토큰: {}", retriedRefreshToken.getRefreshToken());
+            retriedRefreshToken.update(refreshToken, tokenDto.getRefreshTokenExpiresIn());
+            log.warn("리프레시 토큰 이미 존재해서 업데이트~");
+            
+        }
+
+        // 생성된 토큰 반환
+        return tokenDto;
     }
 
     // 리프레시 토큰의 유효성 검증 후, 유효하면 액세스 토큰 반환
@@ -104,7 +117,7 @@ public class AuthService {
 
                 // 데이터베이스에서 해당 리프레시 토큰 정보를 찾음. 존재하지 않으면 에러 메세지 발생.
                 RefreshToken retriedRefreshToken = refreshTokenRepository
-                        .findByRefreshToken(refreshToken)  // .substring(0, refreshToken.length() - 1 ) : 마지막 문자에 특수 문자나 공백이 추가 될 수 있다는 가능성을 고려하여 추가됨.
+                        .findByRefreshToken(refreshToken.substring(0, refreshToken.length() - 1))
                         .orElseThrow(() -> new RuntimeException("해당 리프레시 토큰이 존재하지 않습니다."));
                 // 새롭게 생성된 토큰 정보를 이용하여 기존의 리프레시 토큰을 갱신
                 retriedRefreshToken.update(tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpiresIn());
@@ -113,8 +126,8 @@ public class AuthService {
             } else {
                 log.info("액세스 토큰 줘라!!");
             }
-        } catch(RuntimeException e) {
-            log.info("refreshToken 다른 문자 포함 여부 확인 : {}", refreshToken);
+        } catch (RuntimeException e) {
+            log.info("refreshAccessToken 리프레시 토큰 : {}", refreshToken);
             log.error("refreshAccessToken 유효성 검증 중 예외 발생 : {}", e.getMessage());
         }
         return null;
