@@ -17,6 +17,13 @@ public class RefreshToken {
     private Long id;
 
     @Lob
+    @Column(name = "access_token")
+    private String accessToken;
+
+    @Column(name = "access_token_exp")
+    private Long accessTokenExpiresIn;
+
+    @Lob
     @Column(name = "refresh_token", unique = true)
     private String refreshToken;
 
@@ -28,9 +35,16 @@ public class RefreshToken {
     private Member member;
 
     @Builder   // 복잡한 생성 코들르 단순하고 가독성 좋게 관리하기 위해 빌더 패턴 도입
-    private RefreshToken(String refreshToken, Long refreshTokenExpiresIn, Member member) {
+    private RefreshToken(String accessToken, Long accessTokenExpiresIn, String refreshToken, Long refreshTokenExpiresIn, Member member) {
+        this.accessToken = accessToken;
+        this.accessTokenExpiresIn = accessTokenExpiresIn;
         this.refreshToken = refreshToken;
         this.refreshTokenExpiresIn = refreshTokenExpiresIn;
         this.member = member;
+    }
+
+    public void update(String refreshToken, Long refreshTokenExpiresIn) {
+        this.refreshToken = refreshToken;
+        this.refreshTokenExpiresIn = refreshTokenExpiresIn;
     }
 }

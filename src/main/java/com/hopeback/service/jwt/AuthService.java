@@ -1,11 +1,14 @@
 package com.hopeback.service.jwt;
 
+
 import com.hopeback.dto.jwt.TokenDto;
 import com.hopeback.dto.member.MemberReqDto;
 import com.hopeback.dto.member.MemberResDto;
+import com.hopeback.entity.jwt.RefreshToken;
 import com.hopeback.entity.member.Member;
 import com.hopeback.jwt.TokenProvider;
 import com.hopeback.repository.MemberRepository;
+import com.hopeback.repository.jwt.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +27,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder managerBuilder;  // 인증 담당 클래스
     private final TokenProvider tokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     // 중복 체크(id, nickName)
     public Boolean checkUnique(int type, String info) {
@@ -40,7 +44,6 @@ public class AuthService {
         return isUnique;
     }
 
-
     // 회원 가입
     public MemberResDto signup(MemberReqDto memberReqDto) {
         if (memberRepository.existsByMemberId(memberReqDto.getMemberId())) {
@@ -50,26 +53,71 @@ public class AuthService {
         return MemberResDto.of(memberRepository.save(member));
     }
 
-    // 로그인 (탈퇴 여부 확인 -> 기존 리프레시 토큰 보유시 삭제 후 재 생성)
-//    public TokenDto login(MemberReqDto memberReqDto) {
-//            try {
-//        UsernamePasswordAuthenticationToken authenticationToken = memberReqDto.toAuthentication();  //requestDto 객체의 정보를 기반으로 AuthenticationToken 생성
-//        log.info("authenticationToken : {}", authenticationToken);
-//
-//                // requestDto 객체의 정보를 기반으로 AuthenticationToken 생성, 인증 성공시 Authentication 객체 반환됨
-//                Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-//                log.info("authentication: {}", authentication);
-//                // 인증 정보를 바탕으로 토큰 생성, TokenDto에 생성된 토큰 정보 들어있음
-//                TokenDto token = tokenProvider.generateTokenDto(authentication);
-//
-//                // refreshToken DB에 저장
-//                Member member = memberRepository.findByMemberId(memberReqDto.getMemberId())
-//                        .orElseThrow(() -> new RuntimeException("존재하지 않은 아이디 입니다."));
-//
-//                // 탈퇴한 회원인지 체크
-//
-//
-//    }
+    // 로그인
+    public TokenDto login(MemberReqDto memberReqDto) {
+        // 사용자가 입력한 로그인 객체의 정보(requestDto)를 기반으로 AuthenticationToken 생성
+        UsernamePasswordAuthenticationToken authenticationToken = memberReqDto.toAuthentication();
+        log.info("authenticationToken : {}", authenticationToken);
 
+                // 인증 성공시 Authentication 객체 반환됨
+                Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+                log.info("authentication 객체: {}", authentication);
+                // 인증 정보를 바탕으로 토큰 생성, TokenDto에 생성된 토큰 정보 들어있음
+                TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+
+                // refreshToken DB에 저장을 위해 사용자 ID를 사용하여 데이터베이스에서 해당 사용자를 조회
+                Member member = memberRepository.findByMemberId(memberReqDto.getMemberId())
+                        .orElseThrow(() -> new RuntimeException("존재하지 않은 아이디 입니다."));
+
+                // 조회된 회원을 기반으로 리프레시 토큰 DB 저장, 이미 존재하는 경우에는 갱신
+                String refreshToken = tokenDto.getRefreshToken();
+                RefreshToken retriedRefreshToken = refreshTokenRepository
+                        .findByMember(member)
+                        .orElse(null);
+                if (retriedRefreshToken == null) {
+                    RefreshToken newRefreshToken = RefreshToken.builder()
+                            .accessToken(tokenDto.getAccessToken())  // 액세스 토큰 저장
+                            .accessTokenExpiresIn(tokenDto.getAccessTokenExpiresIn())
+                            .refreshToken(refreshToken)
+                            .refreshTokenExpiresIn(tokenDto.getRefreshTokenExpiresIn())
+                            .member(member)
+                            .build();
+                    refreshTokenRepository.save(newRefreshToken);
+                } else {
+                    log.info("이미 존재하는 리프레시 토큰: {}", retriedRefreshToken.getRefreshToken());
+                    retriedRefreshToken.update(refreshToken, tokenDto.getRefreshTokenExpiresIn());
+                    log.info("새로 받은 리프레시 토큰 : {}", refreshToken);
+                }
+                // 생성된 토큰 반환
+                return tokenDto;
+    }
+
+    // 리프레시 토큰의 유효성 검증 후, 유효하면 액세스 토큰 반환
+    public TokenDto refreshAccessToken(String refreshToken) {
+        try {  // 리프레시 토큰의 유효성 확인
+            if (tokenProvider.validateToken(refreshToken)) {
+                // 유효한 리프레시 토큰을 가져와 사용자의 인증 정보를 가져와 새로운 토큰 생성. 정보는 TokenDto 객체에 저장
+                TokenDto tokenDto = tokenProvider.generateTokenDto(tokenProvider.getAuthentication(refreshToken));
+
+                log.info("refreshAccessToken tokenDto 액세스 토큰 : {}", tokenDto.getAccessToken());
+                log.info("refreshAccessToken tokenDto 리프레스 토큰 : {}", tokenDto.getRefreshToken());
+
+                // 데이터베이스에서 해당 리프레시 토큰 정보를 찾음. 존재하지 않으면 에러 메세지 발생.
+                RefreshToken retriedRefreshToken = refreshTokenRepository
+                        .findByRefreshToken(refreshToken)  // .substring(0, refreshToken.length() - 1 ) : 마지막 문자에 특수 문자나 공백이 추가 될 수 있다는 가능성을 고려하여 추가됨.
+                        .orElseThrow(() -> new RuntimeException("해당 리프레시 토큰이 존재하지 않습니다."));
+                // 새롭게 생성된 토큰 정보를 이용하여 기존의 리프레시 토큰을 갱신
+                retriedRefreshToken.update(tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpiresIn());
+
+                return tokenDto;
+            } else {
+                log.info("액세스 토큰 줘라!!");
+            }
+        } catch(RuntimeException e) {
+            log.info("refreshToken 다른 문자 포함 여부 확인 : {}", refreshToken);
+            log.error("refreshAccessToken 유효성 검증 중 예외 발생 : {}", e.getMessage());
+        }
+        return null;
+    }
 
 }

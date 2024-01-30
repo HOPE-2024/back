@@ -1,5 +1,7 @@
-package com.hopeback.controller;
+package com.hopeback.controller.jwt;
 
+import antlr.Token;
+import com.hopeback.dto.jwt.TokenDto;
 import com.hopeback.dto.member.MemberReqDto;
 import com.hopeback.dto.member.MemberResDto;
 import com.hopeback.service.jwt.AuthService;
@@ -7,10 +9,7 @@ import com.hopeback.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -37,5 +36,11 @@ public class AuthController {
     }
 
     // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<TokenDto> login(@RequestBody MemberReqDto memberReqDto) {
+        System.out.println("회원 ID : " + memberReqDto.getMemberId() );
+        return ResponseEntity.ok(authService.login(memberReqDto));
+    }
+
 }
 

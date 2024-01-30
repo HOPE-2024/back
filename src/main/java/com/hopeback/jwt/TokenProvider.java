@@ -27,14 +27,15 @@ public class TokenProvider {
     // JWT를 생성하고 검증하는 기능을 제공하는 클래스
     private static final String AUTHORITIES_KEY = "auth"; // 토큰에 저장되는 권한 정보의 key
     private static final String BEARER_TYPE = "Bearer"; // 토큰 타입
-    private static long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60; // 1시간
-    private static long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 & 7L; // 7일
+    private static final long ACCESS_TOKEN_EXPIRE_TIME =  60 * 60 * 1000;  //1000 * 60 * 60; // 1시간 (3600000)
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7L;  // 7일 (604800000)
     private final Key key; // 토큰 서명을 하기 위한 key
 
     // @Value : JWT를 만들 때 사용하는 암호화 키 값을 생성
     public TokenProvider(@Value("${jwt.secret}") String secretKey) {
-        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512); // HS512 알고리즘을 사용하는 키 생성
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes()); // HS256 알고리즘으로 새로운 키를 생성
     }
+
 
     // 토큰 생성
     // 인증에 성공한 사용자의 인증 정보를 매개 변수로 받음.
@@ -65,11 +66,11 @@ public class TokenProvider {
         String refreshToken = io.jsonwebtoken.Jwts.builder()
                 .setSubject(authentication.getName())  // 사용자의 이름을 토큰의 주제로 설정
                 .claim(AUTHORITIES_KEY, authotities)   // 권한 정보를 클레임으로 추가
-                .setExpiration(accessTokenExpiresIn)   // 만료 시간과 서명 알고리즘을 설정한 후 키를 사용하여 서명
+                .setExpiration(refreshTokenExpiresIn)   // 만료 시간과 서명 알고리즘을 설정한 후 키를 사용하여 서명
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        log.info("TOKENPRO RFTK : {}", refreshToken);
+        log.info("TOKENPRO RFTK 토큰 생성 !!: {}", refreshToken);
 
         // 토큰 정보를 담은 TokenDto 객체 생성
         return TokenDto.builder()
@@ -117,6 +118,10 @@ public class TokenProvider {
     public boolean validateToken(String token) {
         try { // 토큰을 파싱하여 유효하면 -> 토큰 파서 빌더 생성 후 서명키 설정, 토큰 파싱
             io.jsonwebtoken.Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            log.info("서명키 뭐냐 !!: {}", key);
+            if(key == null) {
+                log.error("key 값이 null입니다");
+            }
             return true;
         } catch (SecurityException | io.jsonwebtoken.MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
