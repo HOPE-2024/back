@@ -23,12 +23,14 @@ public class ChatRoomResDto {
     private String name;
     private LocalDateTime regDate;
     private String active;
+    private LocalDateTime createdAt;
 
     @JsonIgnore // 웹소켓 세션의 직렬화 방지
     private Set<WebSocketSession> sessions; //채팅방에 입장한 세션 정보를 담을 Set
 
     //세션 수가 0인지 확인하는 메서드
-    public boolean isSessionEmpty() { return this.sessions.size() == 0;}
+//    public boolean isSessionEmpty() { return this.sessions.size() == 0;}
+    public boolean isSessionEmpty() {  return this.sessions == null || this.sessions.size() == 0;}
 
     @Builder
     public ChatRoomResDto(String roomId, String name, LocalDateTime regDate) {

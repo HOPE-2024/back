@@ -57,8 +57,24 @@ public class AdminService {
     }
 
     //이름으로 회원 조회
-    public List<MemberResDto> selectMember(String name) {
+    public List<MemberResDto> selectMemberName(String name) {
         List<Member> members = memberRepository.findByNameContaining(name);
+        // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
+        return members.stream()
+                .map(member -> modelMapper.map(member, MemberResDto.class))
+                .collect(Collectors.toList());
+    }
+    //id로 회원 조회
+    public List<MemberResDto> selectMemberId(String name) {
+        List<Member> members = memberRepository.findByMemberIdContaining(name);
+        // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
+        return members.stream()
+                .map(member -> modelMapper.map(member, MemberResDto.class))
+                .collect(Collectors.toList());
+    }
+    //닉네임으로 회원 조회
+    public List<MemberResDto> selectMemberNick(String name) {
+        List<Member> members = memberRepository.findByNickNameContaining(name);
         // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
         return members.stream()
                 .map(member -> modelMapper.map(member, MemberResDto.class))
@@ -94,7 +110,7 @@ public class AdminService {
 
 
 
-    //모든 회원 조회
+    //모든 신고 조회
     public List<ReportDto> selectReportList() {
         List<Report> reports = reportRepository.findAll();
 
@@ -131,6 +147,87 @@ public class AdminService {
         }else {
             return false;
         }
+    }
+    public Boolean updateReportStatus(ReportDto reportDto){
+        Report report = reportRepository.findById(reportDto.getId()).orElseThrow(
+                () -> new RuntimeException("신고 내역이 없습니다."));
+        if(report !=null){
+            report.setStatus(reportDto.getStatus());
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    // 처리 전 신고 목록 조회
+    public List<ReportDto> selectBeforeReport() {
+        List<Report> reports = reportRepository.findByStatus("처리 전");
+
+        // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
+        return reports.stream()
+                .map(report -> {
+                    ReportDto reportDto = modelMapper.map(report, ReportDto.class);
+                    reportDto.setReporter(report.getReporter());
+                    reportDto.setReported(report.getReported());
+                    return reportDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // 처리 후 신고 목록 조회
+    public List<ReportDto> selectAfterReport() {
+        List<Report> reports = reportRepository.findByStatusNot("처리 전");
+
+        // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
+        return reports.stream()
+                .map(report -> {
+                    ReportDto reportDto = modelMapper.map(report, ReportDto.class);
+                    reportDto.setReporter(report.getReporter());
+                    reportDto.setReported(report.getReported());
+                    return reportDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // 이름으로 신고 목록 조회
+    public List<ReportDto> selectReport(String name) {
+        List<Report> reports = reportRepository.findByReporter_NameContainingOrReported_NameContaining(name,name);
+        // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
+        return reports.stream()
+                .map(report -> {
+                    ReportDto reportDto = modelMapper.map(report, ReportDto.class);
+                    reportDto.setReporter(report.getReporter());
+                    reportDto.setReported(report.getReported());
+                    return reportDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // 닉네임으로 신고 목록 조회
+    public List<ReportDto> selectReportNick(String name) {
+        List<Report> reports = reportRepository.findByReporter_NickNameContainingOrReported_NickNameContaining(name,name);
+        // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
+        return reports.stream()
+                .map(report -> {
+                    ReportDto reportDto = modelMapper.map(report, ReportDto.class);
+                    reportDto.setReporter(report.getReporter());
+                    reportDto.setReported(report.getReported());
+                    return reportDto;
+                })
+                .collect(Collectors.toList());
+    }
+    // Id로 신고 목록 조회
+    public List<ReportDto> selectReportId(String name) {
+        List<Report> reports = reportRepository.findByReporter_MemberIdContainingOrReported_MemberIdContaining(name,name);
+        // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
+        return reports.stream()
+                .map(report -> {
+                    ReportDto reportDto = modelMapper.map(report, ReportDto.class);
+                    reportDto.setReporter(report.getReporter());
+                    reportDto.setReported(report.getReported());
+                    return reportDto;
+                })
+                .collect(Collectors.toList());
     }
 
 }

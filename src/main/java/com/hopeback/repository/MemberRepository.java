@@ -11,10 +11,12 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByMemberId(String memberId);
     boolean existsByNickName(String nickName);
-    List<Member> findByActive (String memberId);
     Optional<Member> findByMemberId(String memberId);
+    List<Member> findByActive (String memberId);
     List<Member> findByActiveIn(List<String> activeList);
     List<Member> findByNameContaining(String name);
+    List<Member> findByNickNameContaining(String name);
+    List<Member> findByMemberIdContaining(String name);
 
 
 
