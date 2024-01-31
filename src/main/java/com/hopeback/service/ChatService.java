@@ -44,7 +44,7 @@ public class ChatService {
 
     //채팅방전체조회
     public List<ChatRoomResDto> findAllChatRoom() {
-        List<ChatRoom> chatRoom = chatRoomRepository.findAll();
+        List<ChatRoom> chatRoom = chatRoomRepository.findAllByOrderByCreatedAtDesc();
         List<ChatRoomResDto> chatRoomResDtos = new ArrayList<>();
         for(ChatRoom chatRoom1 : chatRoom) {
             chatRoomResDtos.add(convertEntityToRoomDto(chatRoom1));
