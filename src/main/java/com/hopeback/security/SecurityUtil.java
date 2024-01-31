@@ -7,8 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Slf4j
 public class SecurityUtil {
+    // Jackson 라이브러리의 ObjectMapper를 사용하여 JSON과 Java 객체 간의 변환을 수행하는 데 사용
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    // 보안 관련 작업을 돕는 메소드 : Spring Security를 사용하여 현재 사용자의 회원 ID를 가져오는 유틸리티 클래스
     private SecurityUtil() {
         // private 생성자는 SecurityUtil 클래스의 인스턴스화를 방지하기 위해 사용. 객체 생성 방지 목적
         // 즉, 이 클래스는 상태를 가지지 않고(static = 정적 메소드만을 가진 클래스) 유틸리티 메소드만을 제공.

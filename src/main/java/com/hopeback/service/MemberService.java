@@ -30,8 +30,8 @@ public class MemberService {
     }
 
     // 회원 상세 조회
-    public MemberResDto getMemberDetail(String id) {
-        Member member = memberRepository.findByMemberId(id).orElseThrow(
+    public MemberResDto getMemberDetail(String memberId) {
+        Member member = memberRepository.findByMemberId(memberId).orElseThrow(
                 ()-> new RuntimeException("해당 회원이 존재하지 않습니다."));
         return convertEntityDto(member);
     }

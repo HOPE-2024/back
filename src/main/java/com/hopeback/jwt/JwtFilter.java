@@ -36,6 +36,8 @@ public class JwtFilter extends OncePerRequestFilter { // OncePerRequestFilter : 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String jwt = resolveToken(request);  // HTTP 요청에서 토큰을 추출
+        log.warn("bearerToken : " + jwt);
+
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {  // 토큰 있고 유효한 토큰인지 검증
             Authentication authentication = tokenProvider.getAuthentication(jwt);  // 검증된 토큰으로 인증 객체 생성
             SecurityContextHolder.getContext().setAuthentication(authentication);  // 인증 객체를 SecurityContext에 저장

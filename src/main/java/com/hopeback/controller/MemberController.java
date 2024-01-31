@@ -27,8 +27,8 @@ public class MemberController {
     // 회원 상세 조회
     @GetMapping("/detail")
     public ResponseEntity<MemberResDto> memberDetail() {
-        String id = SecurityUtil.getCurrentMemberId();
-        MemberResDto memberResDto = memberService.getMemberDetail(id);
+        String memberId = SecurityUtil.getCurrentMemberId();
+        MemberResDto memberResDto = memberService.getMemberDetail(memberId);
         return ResponseEntity.ok(memberResDto);
     }
 

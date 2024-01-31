@@ -68,7 +68,7 @@ public class AuthService {
         // 인증 정보를 바탕으로 토큰 생성, TokenDto에 생성된 토큰 정보 들어있음
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal(); // getPrincipal : 인증 객체에서 주체 정보를 추출, 아이디, 권한 정보등 비밀번호와 같이 보호되어야 하는 정보 이외의 회원정보가 모두 저장된 객체
-        log.warn("zzzzzzzzzzz" + String.valueOf(userDetails));
+        log.warn("'userDetails' : " + String.valueOf(userDetails));
 
         // refreshToken DB에 저장을 위해 사용자 ID를 사용하여 데이터베이스에서 해당 사용자를 조회
         // userDetails.getUsername() : memberId (aaa 같은)
@@ -91,13 +91,13 @@ public class AuthService {
                     .member(member)
                     .build();
             refreshTokenRepository.save(newRefreshToken);
-            log.warn("리프레시 토큰 새로 발급~");
+            log.warn("리프레시 토큰 새로 발급 !!");
 
         } else {
             // 갱신
             log.info("이미 존재하는 리프레시 토큰: {}", retriedRefreshToken.getRefreshToken());
             retriedRefreshToken.update(refreshToken, tokenDto.getRefreshTokenExpiresIn());
-            log.warn("리프레시 토큰 이미 존재해서 업데이트~");
+            log.warn("리프레시 토큰 이미 존재해서 업데이트 !!");
             
         }
 
