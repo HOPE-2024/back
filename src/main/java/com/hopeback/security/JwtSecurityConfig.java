@@ -1,6 +1,5 @@
 package com.hopeback.security;
 
-import antlr.Token;
 import com.hopeback.jwt.JwtFilter;
 import com.hopeback.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;

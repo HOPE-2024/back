@@ -87,7 +87,7 @@ public class TokenProvider {
     // 로그인 함수에서 사용자가 입력한 정보를 토대로 토큰을 생성하고, 해당 토큰을 이용하여 인증을 시도해 성공 시 새로운 토큰을 생성했었다.
     // 고로 한 번의 복호화를 거치면 "사용자가 입력한 정보를 토대로 토큰을 생성" 의 토큰이 반환된다.
     public Authentication getAuthentication(String token) {
-        Claims claims = parseClaims(token);
+        Claims claims = parseClaims(token); // 클레임 : 페이로드에 저장된 정보들을 의미
 
         if (claims.get(AUTHORITIES_KEY) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
@@ -99,7 +99,8 @@ public class TokenProvider {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        log.warn("클레임 : " + claims.getSubject());
+        UserDetails principal = new User(claims.getSubject(), "", authorities); // 이미 인증된 토큰을 사용하고 있기 때문에, 비밀번호를 필요하지 않다고 판단
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }

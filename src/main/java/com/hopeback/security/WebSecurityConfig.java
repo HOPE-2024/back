@@ -67,11 +67,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     // CORS 설정
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000") // 특정 origin인 localhost:3000에 대해서 허용
-                .allowedMethods("*")   // 모든 HTTP 메소드 허용
-                .allowedHeaders("*")   // 모든 header 허용
-                .allowCredentials(true);  // 인증이 필요한 요청에 대해서 크리덴셜 전송 허용
+            registry.addMapping("/**")
+                    .allowedOrigins("http://localhost:3000") // 특정 origin인 localhost:3000에 대해서 허용
+                    .allowedMethods("*")   // 모든 HTTP 메소드 허용
+                    .allowedHeaders("*")   // 모든 header 허용
+                    .allowCredentials(false);  // 인증이 필요한 요청에 대해서 크리덴셜 전송 허용, 일반적으로 쿠키를 사용할 때 사용
     }
 }
 
