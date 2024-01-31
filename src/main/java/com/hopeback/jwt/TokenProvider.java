@@ -26,7 +26,7 @@ public class TokenProvider {
     // JWT를 생성하고 검증하는 기능을 제공하는 클래스
     private static final String AUTHORITIES_KEY = "auth"; // 토큰에 저장되는 권한 정보의 key
     private static final String BEARER_TYPE = "Bearer"; // 토큰 타입
-    private static final long ACCESS_TOKEN_EXPIRE_TIME =  10000;  //1000 * 60 * 60; // 1시간 (3600000)
+    private static final long ACCESS_TOKEN_EXPIRE_TIME =  1000 * 60 * 60;;  //1000 * 60 * 60; // 1시간 (3600000)
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7L;  // 7일 (604800000)
     private final Key key; // 토큰 서명을 하기 위한 key
 
