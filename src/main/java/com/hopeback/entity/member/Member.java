@@ -55,4 +55,18 @@ public class Member {
         this.active_date = LocalDateTime.now();
         this.authority = authority;
     }
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", memberId='" + memberId + '\'' +
+                ", name='" + name + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", active='" + active + '\'' +
+                ", active_date=" + active_date +
+                ", authority=" + authority +
+                '}';
+    }
 }

@@ -1,5 +1,6 @@
 package com.hopeback.controller;
 
+import com.hopeback.dto.admin.QueryDto;
 import com.hopeback.dto.admin.ReportDto;
 import com.hopeback.dto.member.MemberResDto;
 import com.hopeback.service.AdminService;
@@ -127,6 +128,33 @@ public class AdminController {
         List<ReportDto> list= adminService.selectReportId(name);
         return ResponseEntity.ok(list);
     }
+
+    // 1대1 문의 등록
+    @PostMapping("/insertQuery")
+    public ResponseEntity<Boolean>  selectReportId(@RequestBody QueryDto queryDto) {
+        Boolean list= adminService.insertQuery(queryDto);
+        return ResponseEntity.ok(list);
+    }
+
+    // 1대1 문의 모두 조회
+    @GetMapping("/selectQuryList")
+    public ResponseEntity<List<QueryDto>> selectQuryList() {
+        List<QueryDto> list = adminService.selectQuryList();
+        return ResponseEntity.ok(list);
+    }
+
+    // 1대1 문의 하나 조회
+    @GetMapping("/selectQury")
+    public ResponseEntity <QueryDto> selectQury(@RequestParam Long id) {
+        QueryDto list = adminService.selectQury(id);
+        return ResponseEntity.ok(list);
+    }
+
+
+
+
+
+
 
 }
 

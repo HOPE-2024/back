@@ -1,10 +1,13 @@
 package com.hopeback.service;
 
+import com.hopeback.dto.admin.QueryDto;
 import com.hopeback.dto.admin.ReportDto;
 import com.hopeback.dto.member.MemberResDto;
+import com.hopeback.entity.admin.Query;
 import com.hopeback.entity.admin.Report;
 import com.hopeback.entity.member.Member;
 import com.hopeback.repository.MemberRepository;
+import com.hopeback.repository.QueryRepository;
 import com.hopeback.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 public class AdminService {
     private final MemberRepository memberRepository;
     private final ReportRepository reportRepository;
+    private final QueryRepository queryRepository;
     private final ModelMapper modelMapper;
 
     //모든 회원 조회
@@ -229,5 +233,47 @@ public class AdminService {
                 })
                 .collect(Collectors.toList());
     }
+
+
+    //1대1 문의 등록
+    public Boolean  insertQuery(QueryDto dto){
+        try{
+            Member member = memberRepository.findById((long) 1).orElseThrow(
+                    () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
+            Query query = new Query();
+            query.setQuestioner(member);
+            query.setDivision(dto.getDivision());
+            query.setSubstance(dto.getSubstance());
+            if(dto.getQueryImg() != null){
+                query.setQueryImg(dto.getQueryImg());
+            }
+            queryRepository.save(query);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    //1대1 문의 전부 출력
+    public List<QueryDto> selectQuryList() {
+        List<Query> reports = queryRepository.findAll();
+
+        // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
+        return reports.stream()
+                .map(report -> {
+                    QueryDto queryDto = modelMapper.map(report, QueryDto.class);
+                    return queryDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    //1대1 문의 하나 출력
+    public QueryDto selectQury( Long id) {
+        Query report = queryRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
+
+        return modelMapper.map(report, QueryDto.class);
+    }
+
 
 }
