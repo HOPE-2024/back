@@ -1,7 +1,7 @@
 package com.hopeback.dto.chat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hopeback.service.ChatService;
+import com.hopeback.service.chat.ChatService;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -72,7 +72,7 @@ public class ChatRoomResDto {
             try {
                 chatService.sendMsg(session, msg);
             } catch (Exception e) {
-                log.error("에러 메세지 ChatRoomResDto: ", e);
+                log.error("채팅 보내기 에러 메세지 ChatRoomResDto: ", e);
             }
         }
     }

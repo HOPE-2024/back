@@ -1,8 +1,10 @@
 package com.hopeback.controller;
 
+import com.hopeback.dto.chat.ChatMsgDto;
 import com.hopeback.dto.chat.ChatRoomReqDto;
 import com.hopeback.dto.chat.ChatRoomResDto;
-import com.hopeback.service.ChatService;
+import com.hopeback.entity.chat.Chat;
+import com.hopeback.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,4 +34,27 @@ public class ChatController {
         return ResponseEntity.ok(chatRooms);
     }
 
+    // 전체 채팅 내역 리스트
+    @GetMapping("/chatList")
+    public ResponseEntity<List<ChatMsgDto>> findAll() {return ResponseEntity.ok(chatService.findAllChat()); }
+
+    // 방 정보 가져오기
+    @GetMapping("/room/{roomId}")
+    public ResponseEntity<ChatRoomResDto> findRoomById(@PathVariable String roomId) {
+        log.info("채팅방 정보 가져가기 : {}", chatService.findRoomById(roomId));
+        return ResponseEntity.ok(chatService.findRoomById(roomId));
+    }
+
+    // 메세지 저장하기
+    @PostMapping("/message")
+    public ResponseEntity<ChatMsgDto> saveMessage(@RequestBody ChatMsgDto chatMsgDto) {
+        chatService.saveMsg(chatMsgDto.getRoomId(), chatMsgDto.getSender(), chatMsgDto.getMsg());
+        return ResponseEntity.ok(chatMsgDto);
+    }
+
+    // 해당 방의 최근 메세지 불러오기
+    @GetMapping("/message/{roomId}")
+    public List<Chat> getRecentMsg(@PathVariable String roomId) {
+        return chatService.getRecentMsg(roomId);
+    }
 }

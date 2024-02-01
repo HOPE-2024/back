@@ -1,4 +1,4 @@
-package com.hopeback.repository;
+package com.hopeback.repository.chat;
 
 import com.hopeback.entity.chat.Chat;
 import com.hopeback.entity.chat.ChatRoom;

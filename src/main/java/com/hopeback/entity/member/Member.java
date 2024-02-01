@@ -34,6 +34,7 @@ public class Member {
     @Column(nullable = false)
     private String phone;
 
+    private String profile;
     private String active;
     private LocalDateTime active_date;
 

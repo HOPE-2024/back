@@ -1,12 +1,12 @@
-package com.hopeback.service;
+package com.hopeback.service.chat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hopeback.dto.chat.ChatMsgDto;
 import com.hopeback.dto.chat.ChatRoomReqDto;
 import com.hopeback.dto.chat.ChatRoomResDto;
 import com.hopeback.entity.chat.*;
-import com.hopeback.repository.ChatRepository;
-import com.hopeback.repository.ChatRoomRepository;
+import com.hopeback.repository.chat.ChatRepository;
+import com.hopeback.repository.chat.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -100,6 +100,7 @@ public class ChatService {
         ChatRoomResDto chatRoomResDto = new ChatRoomResDto();
         chatRoomResDto.setRoomId(chatRoom.getRoomId());
         chatRoomResDto.setName(chatRoom.getRoomName());
+        chatRoomResDto.setCreatedAt(chatRoom.getCreatedAt());
         return chatRoomResDto;
     }
 
