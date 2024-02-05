@@ -1,6 +1,7 @@
 package com.hopeback.controller;
 
 import com.hopeback.dto.admin.QueryDto;
+import com.hopeback.dto.admin.ReplyDto;
 import com.hopeback.dto.admin.ReportDto;
 import com.hopeback.dto.member.MemberResDto;
 import com.hopeback.service.AdminService;
@@ -143,6 +144,13 @@ public class AdminController {
         return ResponseEntity.ok(list);
     }
 
+    // 1대1 문의  닉네임 조회
+    @GetMapping("/nickNameSelectQuryList")
+    public ResponseEntity<List<QueryDto>> nickNameSelectQuryList() {
+        List<QueryDto> list = adminService.nickNameSelectQuryList();
+        return ResponseEntity.ok(list);
+    }
+
     // 1대1 문의 하나 조회
     @GetMapping("/selectQury")
     public ResponseEntity <QueryDto> selectQury(@RequestParam Long id) {
@@ -151,10 +159,38 @@ public class AdminController {
     }
 
 
+    // 문의 글에 댓글 추가
+    @PostMapping("/InsertReply")
+    public ResponseEntity <Boolean> InsertReply(@RequestBody ReplyDto replyDto) {
+        Boolean list = adminService.InsertReply(replyDto);
+        return ResponseEntity.ok(list);
+    }
+
+    // 신고 삭제
+    @PostMapping("/deleteReply")
+    public ResponseEntity<Boolean>  deleteReply(@RequestParam Long id) {
+        Boolean list= adminService.deleteReply(id);
+        return ResponseEntity.ok(list);
+    }
+    // 문의 글 삭제
+    @PostMapping("/deleteQuery")
+    public ResponseEntity<Boolean>  deleteQuery(@RequestParam Long id) {
+        Boolean list= adminService.deleteQuery(id);
+        return ResponseEntity.ok(list);
+    }
+    //댓글 수정
+    @PostMapping("/updateReply")
+    public ResponseEntity <Boolean> updateReply(@RequestBody ReplyDto replyDto) {
+        Boolean list = adminService.updateReply(replyDto);
+        return ResponseEntity.ok(list);
+    }
 
 
-
-
-
+    // 1대1 문의  수정
+    @PostMapping("/updateQuery")
+    public ResponseEntity<Boolean>  updateQuery(@RequestBody QueryDto queryDto) {
+        Boolean list= adminService.updateQuery(queryDto);
+        return ResponseEntity.ok(list);
+    }
 }
 

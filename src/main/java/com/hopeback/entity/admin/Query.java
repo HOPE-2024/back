@@ -36,7 +36,7 @@ public class Query {
     private String substance;
 
     //질문 이미지
-    @Column(name= "img",nullable = false)
+    @Column(name= "img")
     private String queryImg;
 
     @OneToMany(mappedBy = "query", cascade = CascadeType.REMOVE)

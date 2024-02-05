@@ -1,13 +1,16 @@
 package com.hopeback.service;
 
 import com.hopeback.dto.admin.QueryDto;
+import com.hopeback.dto.admin.ReplyDto;
 import com.hopeback.dto.admin.ReportDto;
 import com.hopeback.dto.member.MemberResDto;
 import com.hopeback.entity.admin.Query;
+import com.hopeback.entity.admin.Reply;
 import com.hopeback.entity.admin.Report;
 import com.hopeback.entity.member.Member;
 import com.hopeback.repository.MemberRepository;
 import com.hopeback.repository.QueryRepository;
+import com.hopeback.repository.ReplyRepository;
 import com.hopeback.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ public class AdminService {
     private final MemberRepository memberRepository;
     private final ReportRepository reportRepository;
     private final QueryRepository queryRepository;
+    private final ReplyRepository replyRepository;
     private final ModelMapper modelMapper;
 
     //모든 회원 조회
@@ -140,8 +143,7 @@ public class AdminService {
             return false;
         }
     }
-//신고 내용 읽음으로 변경
-
+    //신고 내용 읽음으로 변경
     public Boolean updateReportStatus(Long id){
         Report report = reportRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("신고 내역이 없습니다."));
@@ -238,18 +240,18 @@ public class AdminService {
     //1대1 문의 등록
     public Boolean  insertQuery(QueryDto dto){
         try{
-            Member member = memberRepository.findById((long) 1).orElseThrow(
+            Member member = memberRepository.findById((long) 7).orElseThrow(
                     () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
             Query query = new Query();
             query.setQuestioner(member);
             query.setDivision(dto.getDivision());
             query.setSubstance(dto.getSubstance());
-            if(dto.getQueryImg() != null){
-                query.setQueryImg(dto.getQueryImg());
-            }
+            query.setQueryImg(dto.getQueryImg());
+
             queryRepository.save(query);
             return true;
         }catch (Exception e){
+            log.warn(String.valueOf(e));
             return false;
         }
     }
@@ -267,6 +269,21 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+
+    //1대1 문의 닉네임 조회
+    public List<QueryDto> nickNameSelectQuryList() {
+        Member member = memberRepository.findById((long) 1).orElseThrow(
+                () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
+
+        List<Query> queries = queryRepository.findByQuestionerNickName(member.getNickName());
+
+        return queries.stream()
+                .map(query -> modelMapper.map(query, QueryDto.class))
+                .collect(Collectors.toList());
+    }
+
+
+
     //1대1 문의 하나 출력
     public QueryDto selectQury( Long id) {
         Query report = queryRepository.findById(id).orElseThrow(
@@ -275,5 +292,80 @@ public class AdminService {
         return modelMapper.map(report, QueryDto.class);
     }
 
+
+    //댓글 등록
+    public Boolean  InsertReply(ReplyDto dto){
+        Member member = memberRepository.findById((long) 1).orElseThrow(
+                () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
+        Query query = queryRepository.findById(dto.getQueryId()).orElseThrow(
+                () -> new RuntimeException("해당 글이 존재하지 않습니다."));
+        try{
+
+            Reply reply = new Reply();
+            reply.setAnswer(dto.getAnswer());
+            reply.setAnswerer(member.getNickName());
+            reply.setQuery(query);
+            replyRepository.save(reply);
+            return true;
+        }catch (Exception e){
+            log.warn(String.valueOf(e));
+            return false;
+        }
+    }
+
+
+    //댓글 삭제
+    public Boolean deleteReply(Long id){
+        Reply reply = replyRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("댓글 내역이 없습니다."));
+        if(reply !=null){
+            replyRepository.deleteById(id);
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    //문의글 삭제
+    public Boolean deleteQuery(Long id){
+        Query query = queryRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("신고 내역이 없습니다."));
+        if(query !=null){
+            queryRepository.deleteById(id);
+            return true;
+        }else {
+            return false;
+        }
+    }
+    //댓글 수정
+    public Boolean updateReply(ReplyDto replyDto) {
+        Reply reply = replyRepository.findById(replyDto.getId()).orElseThrow(
+                () -> new RuntimeException("댓글 내역이 없습니다."));
+        if (reply != null) {
+            reply.setAnswer(replyDto.getAnswer());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    // 1대1 문의  수정
+    //1대1 문의 등록
+    public Boolean  updateQuery(QueryDto dto){
+        try{
+            Query query  = queryRepository.findById(dto.getId()).orElseThrow(
+                    () -> new RuntimeException("해당 글이 존재하지 않습니다."));
+            query.setDivision(dto.getDivision());
+            query.setSubstance(dto.getSubstance());
+            if(dto.getQueryImg() != null){
+                query.setQueryImg(dto.getQueryImg());
+            }
+            queryRepository.save(query);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
 
 }
