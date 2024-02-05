@@ -1,6 +1,7 @@
 package com.hopeback.controller;
 
 import com.hopeback.service.EmailService;
+import com.hopeback.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import javax.persistence.EntityNotFoundException;
 @RequiredArgsConstructor
 public class EmailController {
     private final EmailService emailService;
+    private final MemberService memberService;
+
 
 
     // 이메일 인증 코드 발송
@@ -34,6 +37,13 @@ public class EmailController {
         } catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    // 토큰 없이 회원 아이디 상세 조회
+    @GetMapping("/idcheck")
+    public ResponseEntity<Boolean> checkMemberIdExists(@RequestParam("memberId") String memberid) {
+        boolean exists = emailService.memberIdExists(memberid);
+        return ResponseEntity.ok(exists);
     }
 
 }

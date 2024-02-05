@@ -123,4 +123,10 @@ public class EmailService {
         }
     }
 
+    // 토큰 없이 회원 아이디 조회  isPresent() : 객체에 값이 존재하는지 여부를 확인. 존재하면 true,  없으면 false를 반환
+    public boolean memberIdExists(String memberId) {
+        Optional<Member> member = memberRepository.findByMemberId(memberId);
+        return member.isPresent();
+    }
+
 }
