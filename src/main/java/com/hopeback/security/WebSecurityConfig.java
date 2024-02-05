@@ -48,7 +48,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .authorizeRequests()  // URL 패턴에 따른 접근 권한을 설정
 
                 // 특정 경로에 대해서 인증 없이 허용
-                .antMatchers("/auth/**", "/ws/**", "/test/**", "/admin/**", "/chat/**", "/elastic/**", "/refresh/**", "/email/**").permitAll()
+                .antMatchers("/auth/**", "/ws/**", "/test/**", "/admin/**", "/chat/**", "/elastic/**", "/refresh/**", "/myPage/**").permitAll()
 
                 // Swagger 에 관련된 리소스에 대해서 인증 없이 허용
                 .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**", "/sign-api/exception").permitAll()
@@ -67,11 +67,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     // CORS 설정
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-            registry.addMapping("/**")
-                    .allowedOrigins("http://localhost:3000") // 특정 origin인 localhost:3000에 대해서 허용
-                    .allowedMethods("*")   // 모든 HTTP 메소드 허용
-                    .allowedHeaders("*")   // 모든 header 허용
-                    .allowCredentials(false);  // 인증이 필요한 요청에 대해서 크리덴셜 전송 허용, 일반적으로 쿠키를 사용할 때 사용
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000") // 특정 origin인 localhost:3000에 대해서 허용
+                .allowedMethods("*")   // 모든 HTTP 메소드 허용
+                .allowedHeaders("*")   // 모든 header 허용
+                .allowCredentials(false);  // 인증이 필요한 요청에 대해서 크리덴셜 전송 허용, 일반적으로 쿠키를 사용할 때 사용
     }
 }
 

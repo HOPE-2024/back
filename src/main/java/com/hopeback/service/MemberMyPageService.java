@@ -21,9 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberMyPageService {
     private final MemberRepository memberRepository;
     // 회원 상세조회
-    public MemberMyPageDto getMemberDetail(String email) {
-        log.info("userService 회원상세조회 이메일 : {}", email);
-        Member member = memberRepository.findByEmail(email).orElseThrow(
+    public MemberMyPageDto getMemberDetail(String memberId) {
+        log.info("memberService 회원상세조회 멤버아이디 : {}", memberId);
+        Member member = memberRepository.findByMemberId(memberId).orElseThrow(
                 () -> new RuntimeException("해당회원이 존재하지 않습니다.")
         );
         log.info("회원 상세조회 member정보 가져오기 : 닉네임은 {}", member.getNickName());

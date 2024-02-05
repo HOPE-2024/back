@@ -1,6 +1,7 @@
 package com.hopeback.controller;
 
 import com.hopeback.dto.member.MemberDto;
+import com.hopeback.dto.member.MemberMyPageDto;
 import com.hopeback.dto.member.MemberResDto;
 import com.hopeback.security.SecurityUtil;
 import com.hopeback.service.MemberService;

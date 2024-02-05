@@ -22,8 +22,8 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class ChatService {
-    private final ObjectMapper objectMapper;
-    private Map<String, ChatRoomResDto> chatRooms;
+    private final ObjectMapper objectMapper; // JSON 문자열로 변환하기 위한 객체
+    private Map<String, ChatRoomResDto> chatRooms; // 채팅방 정보를 담을 맵
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
 
@@ -51,7 +51,15 @@ public class ChatService {
         }
         return chatRoomResDtos;
     }
+    public List<ChatRoomResDto> findFreeRoom() { // 채팅방 리스트 반환
+        List<ChatRoomResDto> chatRoomResDtoList = new ArrayList<>();
+        for (ChatRoomResDto chatRoomDto : chatRooms.values()) {
+            chatRoomResDtoList.add(chatRoomDto);
+        }
+        return chatRoomResDtoList;
+    }
 
+    //채팅방 가져오기
     public ChatRoomResDto findRoomById(String roomId) { return chatRooms.get(roomId);}
 
     //이전 채팅 가져오기
@@ -74,6 +82,37 @@ public class ChatService {
         chatRooms.put(randomId, chatRoom);
         return chatRoom;
     }
+    // 채팅방 삭제
+    public boolean deleteRoom(String roomId) {
+        ChatRoomResDto room = chatRooms.get(roomId); // 방 정보 가져오기
+        if (room != null) { // 방이 존재하면
+            if (room.isSessionEmpty()) { // 방에 세션이 없으면
+                chatRooms.remove(roomId); // 방 삭제
+                ChatRoom chatRoomEntity = chatRoomRepository.findById(roomId).orElseThrow(
+                        () -> new RuntimeException("해당 채팅방이 존재하지 않습니다.")
+                );
+                if (chatRoomEntity != null) {
+                    chatRoomRepository.delete(chatRoomEntity);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // 채팅 내역 삭제
+    public boolean deleteChat(Long id) {
+        try {
+            Chat chat = chatRepository.findById(id).orElseThrow(
+                    () -> new RuntimeException("해당 채팅 내역이 없습니다.")
+            );
+            chatRepository.delete(chat);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public <T> void sendMsg(WebSocketSession session, T msg) {
         try {
@@ -82,6 +121,8 @@ public class ChatService {
             log.error(e.getMessage(), e);
         }
     }
+
+
 
     //채팅 메세지 데이터베이스 저장하기
     public void saveMsg(String roomId, String sender, String msg) {

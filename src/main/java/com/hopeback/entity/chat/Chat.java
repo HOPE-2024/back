@@ -30,5 +30,6 @@ public class Chat {
     @JoinColumn(name = "room_id")
     @JsonIgnore
     private ChatRoom chatRoom;
+
     private String active;
 }

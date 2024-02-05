@@ -51,6 +51,7 @@ public class Member {
         this.nickName = nickName;
         this.email = email;
         this.phone = phone;
+        this.profile = profile;
         this.active = active;
         this.active_date = LocalDateTime.now();
         this.authority = authority;

@@ -46,7 +46,7 @@ public class ChatRoomResDto {
             if (chatMsg.getSender() != null) {
                 chatMsg.setMsg(chatMsg.getSender() + "님이 입장했습니다.");
             }
-            log.debug("새로운 세션 추가 : " + session);
+            log.debug("새로운 세션 추가 : " + session + "현재 세션 수 : " + sessions.size());
         } else if (chatMsg.getType() != null && chatMsg.getType().equals(ChatMsgDto.MsgType.CLOSE)) {
             sessions.remove(session);
             if (chatMsg.getSender() != null) {
