@@ -1,5 +1,8 @@
 package com.hopeback.service;
 
+import com.hopeback.entity.member.Member;
+import com.hopeback.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
@@ -10,11 +13,15 @@ import org.springframework.stereotype.Service;
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class EmailService {
+    private final MemberRepository memberRepository;
 
     @Autowired
     JavaMailSender emailSender;
@@ -102,6 +109,17 @@ public class EmailService {
             // 이메일 전송 실패시 예외를 던짐
             e.printStackTrace();
             throw new IllegalArgumentException("Failed to send email: " + e.getMessage(), e);
+        }
+    }
+
+    // 이메일로 아이디 찾아주기
+    public  String findIdByEmail (String email) {
+        Optional<Member> memberOptional = memberRepository.findByEmail(email);
+        if(memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+            return member.getMemberId();
+        } else {
+            throw new EntityNotFoundException("해당 이메일로 등록된 회원을 찾을 수 없습니다.");
         }
     }
 

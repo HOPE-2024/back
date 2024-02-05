@@ -136,15 +136,5 @@ public class AuthService {
         return null;
     }
 
-    // 인증번호 확인 후 이메일로 아이디 찾아주기
-    public  String FindbyIdEmail (String email) {
-        Optional<Member> memberOptional = memberRepository.findByEmail(email);
-        if(memberOptional.isPresent()) {
-            Member member = memberOptional.get();
-            return member.getMemberId();
-        } else {
-            throw new EntityNotFoundException("해당 이메일로 등록된 회원을 찾을 수 없습니다.");
-        }
-    }
 
 }

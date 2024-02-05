@@ -42,11 +42,5 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(memberReqDto));
     }
 
-    // 인증번호 확인 후 이메일로 아이디 찾아주기
-//    @PostMapping("/findidbyemail")
-//    public ResponseEntity<?> findIdEmail(@RequestBody MemberReqDto request) {
-//        // 클라이언트가 입력한 인증번호와 서버에서 생성한 인증번호가 일치하는지 확인
-//        if(request.getVerificationCode().equals())
-//    }
 }
 
