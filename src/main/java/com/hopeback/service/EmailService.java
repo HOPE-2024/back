@@ -104,4 +104,5 @@ public class EmailService {
             throw new IllegalArgumentException("Failed to send email: " + e.getMessage(), e);
         }
     }
+
 }
