@@ -21,6 +21,7 @@ public class MemberReqDto {
     private String email;
     private String nickName;
     private String phone;
+    private boolean marketingAgree;
 
     // MemberResDto -> Member
     public Member toEntity(PasswordEncoder passwordEncoder){  // 비밀번호 암호화
