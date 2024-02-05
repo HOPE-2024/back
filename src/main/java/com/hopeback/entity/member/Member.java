@@ -44,7 +44,7 @@ public class Member {
 
     // jwt를 위한 빌더 패턴 사용
     @Builder
-    public Member(String memberId, String password, String name, String nickName, String email, String phone, String active, Authority authority) {
+    public Member(String memberId, String password, String name, String nickName, String email, String phone, String profile, String active, Authority authority) {
         this.memberId = memberId;
         this.password = password;
         this.name = name;
