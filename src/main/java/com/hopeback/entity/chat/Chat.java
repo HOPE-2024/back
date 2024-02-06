@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,6 +31,14 @@ public class Chat {
     @JoinColumn(name = "room_id")
     @JsonIgnore
     private ChatRoom chatRoom;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "chat_member",
+            joinColumns = @JoinColumn(name = "chat_id")
+    )
+    @Column(name = "member")
+    private List<String> members;
 
     private String active;
 }

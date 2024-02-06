@@ -17,6 +17,7 @@ public class MemberMyPageDto {
     private String nickName;
     private String email;
     private String phone;
+    private String profile;
     private String active;
     private LocalDateTime active_date;
 }

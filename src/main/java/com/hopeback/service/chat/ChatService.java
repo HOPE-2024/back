@@ -42,6 +42,29 @@ public class ChatService {
         return chatMsgDtos;
     }
 
+    // 채팅방 참여자 목록 가져오기
+    public List<String> getChatMembers(String roomId) {
+        Optional<Chat> chatOptional = chatRepository.findById(roomId);
+        if (chatOptional.isPresent()) {
+            Chat chat = chatOptional.get();
+            return chat.getMembers();
+        } else {
+            throw new RuntimeException("채팅방을 찾을 수 없습니다.");
+        }
+    }
+
+    // 채팅방 참여자 목록 업데이트
+    public void updateChatMembers(String roomId, List<String> members) {
+        Optional<Chat> chatOptional = chatRepository.findById(roomId);
+        if (chatOptional.isPresent()) {
+            Chat chat = chatOptional.get();
+            chat.setMembers(members);
+            chatRepository.save(chat);
+        } else {
+            throw new RuntimeException("채팅방을 찾을 수 없습니다.");
+        }
+    }
+
     //채팅방전체조회
     public List<ChatRoomResDto> findAllChatRoom() {
         List<ChatRoom> chatRoom = chatRoomRepository.findAllByOrderByCreatedAtDesc();
