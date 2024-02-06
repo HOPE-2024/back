@@ -1,4 +1,4 @@
-package com.hopeback.controller;
+package com.hopeback.controller.chat;
 
 import com.hopeback.dto.chat.ChatMsgDto;
 import com.hopeback.dto.chat.ChatRoomReqDto;
@@ -37,6 +37,14 @@ public class ChatController {
     @GetMapping("/freeList")
     public ResponseEntity<List<ChatRoomResDto>> findByFreeRoom() {
         return ResponseEntity.ok(chatService.findFreeRoom());
+    }
+
+    // 채팅방 참여자 목록 가져오기
+    @GetMapping("/members/{roomId}")
+    public ResponseEntity<List<String>> getChatMembers(@PathVariable String roomId) {
+        List<String> chatMembers = chatService.getChatMembers(roomId);
+        log.info("챗 컨트롤러 채팅방 참여자 어떻게 가져오나 : {}", chatService.getChatMembers(roomId));
+        return ResponseEntity.ok(chatMembers);
     }
 
     // 전체 채팅 내역 리스트

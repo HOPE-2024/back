@@ -2,6 +2,7 @@ package com.hopeback.entity.member;
 
 import com.hopeback.constant.Authority;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -34,7 +35,9 @@ public class Member {
     @Column(nullable = false)
     private String phone;
 
+    @Column(nullable = false)
     private String profile;
+
     private String active;
     private LocalDateTime active_date;
 
@@ -69,5 +72,10 @@ public class Member {
                 ", active_date=" + active_date +
                 ", authority=" + authority +
                 '}';
+    }
+
+    //비밀번호 암호화 메소드
+    public void passwordEncode(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
     }
 }

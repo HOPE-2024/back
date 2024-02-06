@@ -5,10 +5,7 @@ import com.hopeback.service.MemberMyPageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -24,5 +21,12 @@ public class MemberMyPageController {
         MemberMyPageDto memberMyPageDto = memberMyPageService.getMemberDetail(memberId);
         log.info("userMyPageDto controller 회원상세조회 닉네임 들어오는지 확인 : {}", memberMyPageDto.getNickName());
         return ResponseEntity.ok(memberMyPageDto);
+    }
+
+    //회원수정
+    @PutMapping("/modify")
+    public ResponseEntity<Boolean> modifyMember(@RequestBody MemberMyPageDto memberMyPageDto) {
+        boolean isTrue = memberMyPageService.modifyMember(memberMyPageDto);
+        return ResponseEntity.ok(isTrue);
     }
 }
