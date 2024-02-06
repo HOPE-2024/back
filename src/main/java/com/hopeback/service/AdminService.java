@@ -12,6 +12,7 @@ import com.hopeback.repository.MemberRepository;
 import com.hopeback.repository.QueryRepository;
 import com.hopeback.repository.ReplyRepository;
 import com.hopeback.repository.ReportRepository;
+import com.hopeback.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -238,8 +239,10 @@ public class AdminService {
 
 
     //1대1 문의 등록
-    public Boolean  insertQuery(QueryDto dto){
+    public Boolean insertQuery(QueryDto dto){
         try{
+            String memberId = SecurityUtil.getCurrentMemberId();
+            log.warn("aaaaaaaaaa" + memberId);
             Member member = memberRepository.findById((long) 7).orElseThrow(
                     () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
             Query query = new Query();

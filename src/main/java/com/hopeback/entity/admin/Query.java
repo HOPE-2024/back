@@ -1,21 +1,16 @@
 package com.hopeback.entity.admin;
 
-
 import com.hopeback.entity.member.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "query")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 public class Query {
     @Id
