@@ -35,7 +35,7 @@ public class Member {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String profile;
 
     private String active;
