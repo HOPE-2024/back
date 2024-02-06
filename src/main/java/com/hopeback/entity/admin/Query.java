@@ -1,10 +1,14 @@
 package com.hopeback.entity.admin;
 
+
 import com.hopeback.entity.member.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -21,7 +25,9 @@ public class Query {
     @OneToOne
     @JoinColumn(name = "questioner", nullable = false)
     private Member questioner;
-
+    //질문 제목
+    @Column(name= "title",nullable = false)
+    private String title ;
     //질문 구분
     @Column(name= "division",nullable = false)
     private String division ;

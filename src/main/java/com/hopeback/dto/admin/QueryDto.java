@@ -14,6 +14,7 @@ import java.util.List;
 public class QueryDto {
     private Long id;
     private Member questioner;
+    private String title;
     private String division;
     private String substance;
     private String queryImg;
