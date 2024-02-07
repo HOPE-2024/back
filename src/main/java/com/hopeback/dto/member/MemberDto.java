@@ -1,10 +1,7 @@
 package com.hopeback.dto.member;
 
 import com.hopeback.constant.Authority;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EnumType;
@@ -29,6 +26,12 @@ public class MemberDto {
     private LocalDateTime active_date;
     @Enumerated(EnumType.STRING)
     private Authority authority;
+    private String image;
 
+    @Builder
+    public MemberDto(Long id, String image){
+        this.id = id;
+        this.image = image;
+    }
 
 }

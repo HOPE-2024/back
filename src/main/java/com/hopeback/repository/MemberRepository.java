@@ -13,6 +13,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByMemberId(String memberId);
     boolean existsByNickName(String nickName);
     Optional<Member> findByMemberId(String memberId);
+    Optional<Member> findByNickName(String NickName);
     Optional<Member> findByEmail(String email);
     List<Member> findByActive(String activeStatus);
     List<Member> findByActiveIn(List<String> activeList);
@@ -21,7 +22,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findByNickNameContaining(String name);
     List<Member> findByMemberIdContaining(String name);
     int countByActiveIn(List<String> activeList);
-
-
 
 }
