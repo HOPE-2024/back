@@ -1,5 +1,6 @@
 package com.hopeback.service;
 
+import com.hopeback.dto.member.PasswordResetDto;
 import com.hopeback.entity.member.Member;
 import com.hopeback.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
@@ -22,6 +23,8 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class EmailService {
     private final MemberRepository memberRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     JavaMailSender emailSender;
@@ -129,4 +132,21 @@ public class EmailService {
         return member.isPresent();
     }
 
+    // 이메일 인증 확인 후 비밀번호 재설정
+    public boolean resetPassword(PasswordResetDto passwordResetDto) {
+        Optional<Member> optionalMember = memberRepository.findByMemberId(passwordResetDto.getMemberId());
+
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+
+            // 비밀번호 암호화하여 저장
+            String encodedPassword = passwordEncoder.encode(passwordResetDto.getPassword());
+            member.setPassword(encodedPassword);
+            memberRepository.save(member);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
