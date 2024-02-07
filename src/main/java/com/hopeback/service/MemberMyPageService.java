@@ -36,7 +36,8 @@ public class MemberMyPageService {
     // 회원번호 수정
     public boolean modifyMember(MemberMyPageDto memberMyPageDto) {
         try {
-            Member member = memberRepository.findByEmail(memberMyPageDto.getEmail()).orElseThrow(
+                    log.warn("서비스에서 유저 정보 들어오나? {}", memberMyPageDto.getMemberId());
+            Member member = memberRepository.findByMemberId(memberMyPageDto.getMemberId()).orElseThrow(
                     () -> new RuntimeException("회원수정 : 해당 회원이 존재하지 않습니다.")
             );
             if (memberMyPageDto.getPassword() != null) {
@@ -44,7 +45,7 @@ public class MemberMyPageService {
                 member.passwordEncode(passwordEncoder);
             } else {
                 member.setProfile(memberMyPageDto.getProfile().isEmpty() ? member.getProfile() : memberMyPageDto.getProfile());
-                member.setNickName(memberMyPageDto.getNickName().isEmpty() ? member.getNickName() : memberMyPageDto.getNickName());
+//                member.setNickName(memberMyPageDto.getNickName().isEmpty() ? member.getNickName() : memberMyPageDto.getNickName());
             }
             memberRepository.save(member);
             return true;

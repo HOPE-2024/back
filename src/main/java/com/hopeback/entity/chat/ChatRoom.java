@@ -32,9 +32,5 @@ public class ChatRoom {
     @JsonManagedReference
     private List<Chat> chats = new ArrayList<>(); //채팅방 대화 내용 저장
 
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<MemberSession> memberSessions = new ArrayList<>(); // 채팅방에 참여한 사용자의 세션 정보
-
     private String active;
 }
