@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "member")
-@Getter @Setter @ToString
+@Getter
+@Setter
 @NoArgsConstructor
 public class Member {
     @Id
@@ -59,6 +60,7 @@ public class Member {
         this.active_date = LocalDateTime.now();
         this.authority = authority;
     }
+
     @Override
     public String toString() {
         return "Member{" +
