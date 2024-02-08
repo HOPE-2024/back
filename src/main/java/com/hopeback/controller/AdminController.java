@@ -26,8 +26,8 @@ public class AdminController {
 
     // 모든 회원 조회
     @GetMapping("/list")
-    public ResponseEntity<List<MemberResDto>> selectMemberList() {
-        List<MemberResDto> list = adminService.selectMemberList();
+    public ResponseEntity<List<MemberDto>> selectMemberList() {
+        List<MemberDto> list = adminService.selectMemberList();
         return ResponseEntity.ok(list);
     }
     // 채팅 정지 회원 조회
@@ -86,6 +86,13 @@ public class AdminController {
         return ResponseEntity.ok(list);
     }
 
+
+    // 신고 추가
+    @PostMapping("/insertReport")
+    public ResponseEntity<Boolean> insertReport(@RequestBody ReportDto reportDto) {
+        Boolean list= adminService.insertReport(reportDto);
+        return ResponseEntity.ok(list);
+    }
 
 
     // 신고 상태 변경(읽음)
@@ -252,9 +259,9 @@ public class AdminController {
     }
     // 페이지네이션으로 가져가기
     @GetMapping("/member/page")
-    public ResponseEntity<List<MemberResDto>>selectMemberPageList(@RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "10") int size) {
-        List<MemberResDto> list = adminService.selectMemberPageList(page, size);
+    public ResponseEntity<List<MemberDto>>selectMemberPageList(@RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "10") int size) {
+        List<MemberDto> list = adminService.selectMemberPageList(page, size);
         return ResponseEntity.ok(list);
     }
     // 페이지 수 조회
@@ -300,8 +307,33 @@ public class AdminController {
     }
 //-------------------------------------------------------------------------------------------------------------------------------------
 
+    //내 문의 글 조회
+    @GetMapping("/oftenQuery")
+    public ResponseEntity<List<QueryDto>> oftenQuery() {
+        List<QueryDto> list = adminService.oftenQuery();
+        return ResponseEntity.ok(list);
+    }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------
 
 }
 

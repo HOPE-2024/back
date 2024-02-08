@@ -3,6 +3,7 @@ package com.hopeback.service;
 import com.hopeback.dto.admin.QueryDto;
 import com.hopeback.dto.admin.ReplyDto;
 import com.hopeback.dto.admin.ReportDto;
+import com.hopeback.dto.member.MemberDto;
 import com.hopeback.dto.member.MemberResDto;
 import com.hopeback.entity.admin.Query;
 import com.hopeback.entity.admin.Reply;
@@ -43,12 +44,12 @@ public class AdminService {
     private final ModelMapper modelMapper;
 
     //모든 회원 조회
-    public List<MemberResDto> selectMemberList() {
+    public List<MemberDto> selectMemberList() {
         List<Member> members = memberRepository.findAll();
 
         // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
         return members.stream()
-                .map(member -> modelMapper.map(member, MemberResDto.class))
+                .map(member -> modelMapper.map(member, MemberDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -140,6 +141,39 @@ public class AdminService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+
+    public Boolean insertReport(ReportDto reportDto){
+        try{
+            String memberId = SecurityUtil.getCurrentMemberId();
+            Member member = memberRepository.findByMemberId(memberId).orElseThrow(
+                    () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
+            Member member2 = memberRepository.findByNickName(reportDto.getReporter().getNickName())
+                    .orElseThrow(() -> new RuntimeException("해당 회원이 존재하지 않습니다."));
+
+
+            Report report = new Report();
+
+            report.setReportId(member.getId());
+            // 신고 당한 사람
+            report.setReported(member2);
+            //신고 한 사람
+            report.setReporter(member);
+            report.setCheck(reportDto.getCheck());
+            LocalDateTime now = LocalDateTime.now();
+            report.setDate(now);
+            report.setStatus("처리 전" );
+            report.setReason(reportDto.getReason());
+            reportRepository.save(report);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     @Transactional
     //신고 내역 삭제
     public Boolean deleteReport(Long id){
@@ -152,6 +186,8 @@ public class AdminService {
             return false;
         }
     }
+
+
     @Transactional
     //신고 내용 읽음으로 변경
     public Boolean updateReportStatus(Long id){
@@ -459,13 +495,13 @@ public class AdminService {
 
 
     // 페이지네이션으로  모든 데이터 출력
-    public List<MemberResDto> selectMemberPageList(int page, int size) {
+    public List<MemberDto> selectMemberPageList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<Member> members = memberRepository.findAll(pageable).getContent();
         return members.stream()
                 .map(member -> {
-                    MemberResDto memberResDto = modelMapper.map(member, MemberResDto.class);
-                    return memberResDto;
+                    MemberDto memberDto = modelMapper.map(member, MemberDto.class);
+                    return memberDto;
                 })
                 .collect(Collectors.toList());
 
@@ -527,7 +563,16 @@ public class AdminService {
 
 
 
+    //내 문의 글 조회
+    public List<QueryDto> oftenQuery() {
+        // "처리 전" 상태에 있는 문의 글 조회
+        List<Query> reports = queryRepository.findByOftenContaining("자주 하는 질문");
 
+        // 조회된 각 문의 글을 QueryDto 객체로 매핑하여 리스트로 반환
+        return reports.stream()
+                .map(query -> modelMapper.map(query, QueryDto.class))
+                .collect(Collectors.toList());
+    }
 
 
 

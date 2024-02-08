@@ -22,7 +22,7 @@ public class MemberDto {
     private String nickName;
     private String email;
     private String phone;
-    private Integer active;
+    private String active;
     private LocalDateTime active_date;
     @Enumerated(EnumType.STRING)
     private Authority authority;

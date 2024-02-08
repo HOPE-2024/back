@@ -40,6 +40,10 @@ public class Query {
     @Column(name= "img")
     private String queryImg;
 
+    //자주 하는 질문 등록
+    @Column(name= "often")
+    private String often;
+
     @OneToMany(mappedBy = "query", cascade = CascadeType.REMOVE)
     private List<Reply> reply;
 
