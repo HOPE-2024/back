@@ -44,6 +44,9 @@ public class Query {
     @Column(name= "often")
     private String often;
 
+    @Column(name= "query_status")
+    private String status;
+
     @OneToMany(mappedBy = "query", cascade = CascadeType.REMOVE)
     private List<Reply> reply;
 

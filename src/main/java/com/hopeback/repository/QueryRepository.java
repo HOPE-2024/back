@@ -12,5 +12,5 @@ public interface QueryRepository extends JpaRepository<Query, Long> {
 
     List<Query> findByQuestionerNickName(String nickName);
     List<Query> findByOftenContaining(String often);
-
+    List<Query> findByQuestionerNickNameAndOftenNot(String nickName, String often);
 }

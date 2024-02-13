@@ -1,5 +1,6 @@
 package com.hopeback.service;
 
+import com.hopeback.constant.Authority;
 import com.hopeback.dto.admin.QueryDto;
 import com.hopeback.dto.admin.ReplyDto;
 import com.hopeback.dto.admin.ReportDto;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -297,6 +299,16 @@ public class AdminService {
             query.setDivision(dto.getDivision());
             query.setSubstance(dto.getSubstance());
             query.setQueryImg(dto.getQueryImg());
+            if (member.getAuthority() == Authority.ADMIN) {
+                log.warn("관리자 입니다.");
+                query.setOften("자주 하는 질문");
+
+            } else {
+                log.warn("회원 입니다.");
+                query.setOften("1대1 문의 ");
+                query.setStatus("답변 전");
+            }
+
             queryRepository.save(query);
             return true;
         }catch (Exception e){
@@ -304,34 +316,26 @@ public class AdminService {
         }
     }
 
-    //1대1 문의 전부 출력
-    public List<QueryDto> selectQuryList() {
-        String memberId = SecurityUtil.getCurrentMemberId();
-        Member member = memberRepository.findByMemberId(memberId).orElseThrow(
-                () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
-        if(member.getNickName().equals("관리자")){
-            List<Query> reports = queryRepository.findAll();
 
-            // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
+    //1대1 문의 전부 출력
+    public List<QueryDto> selectQueryList() {
+            List<Query> reports = queryRepository.findAll();
             return reports.stream()
                     .map(report -> {
                         QueryDto queryDto = modelMapper.map(report, QueryDto.class);
                         return queryDto;
                     })
                     .collect(Collectors.toList());
-        }else {
-            return  selectMyQury();
-        }
-
     }
 
 
     //내 문의 글 조회
-    public List<QueryDto> selectMyQury() {
+    public List<QueryDto> selectMyQuery() {
         String memberId = SecurityUtil.getCurrentMemberId();
         Member member = memberRepository.findByMemberId(memberId).orElseThrow(
                 () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
-        List<Query> queries = queryRepository.findByQuestionerNickName(member.getNickName());
+//        List<Query> queries = queryRepository.findByQuestionerNickName(member.getNickName());
+        List<Query> queries = queryRepository.findByQuestionerNickNameAndOftenNot(member.getNickName(), "자주 하는 질문");
 
         return queries.stream()
                 .map(query -> modelMapper.map(query, QueryDto.class))
@@ -341,9 +345,9 @@ public class AdminService {
 
 
     //1대1 문의 하나 출력
-    public QueryDto selectQury( Long id) {
+    public QueryDto selectQuery( Long id) {
         Query report = queryRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
+                () -> new RuntimeException("해당 번호의 문의는 없습니다."));
 
         return modelMapper.map(report, QueryDto.class);
     }
@@ -351,8 +355,8 @@ public class AdminService {
     @Transactional
     //댓글 등록
     public Boolean  insertReply(ReplyDto dto){
-        try{  String memberId = SecurityUtil.getCurrentMemberId();
-
+        try{
+            String memberId = SecurityUtil.getCurrentMemberId();
             Member member = memberRepository.findByMemberId(memberId).orElseThrow(
                     () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
             Query query = queryRepository.findById(dto.getQueryId()).orElseThrow(
@@ -362,6 +366,14 @@ public class AdminService {
             reply.setAnswerer(member.getNickName());
             reply.setQuery(query);
             replyRepository.save(reply);
+            if (member.getAuthority() == Authority.ADMIN) {
+                log.warn("관리자 입니다.");
+                query.setStatus("답변 완료");
+                queryRepository.save(query);
+            } else {
+                log.warn("회원 입니다.");
+            }
+
             return true;
         }catch (Exception e){
             log.warn(String.valueOf(e));

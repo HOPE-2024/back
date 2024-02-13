@@ -150,23 +150,23 @@ public class AdminController {
     }
 
     // 1대1 문의 조회
-    @GetMapping("/selectQuryList")
-    public ResponseEntity<List<QueryDto>> selectQuryList() {
-        List<QueryDto> list = adminService.selectQuryList();
+    @GetMapping("/selectQueryList")
+    public ResponseEntity<List<QueryDto>> selectQueryList() {
+        List<QueryDto> list = adminService.selectQueryList();
         return ResponseEntity.ok(list);
     }
 
     //내 문의 글 조회
-    @GetMapping("/selectMyQury")
-    public ResponseEntity<List<QueryDto>> selectMyQury() {
-        List<QueryDto> list = adminService.selectMyQury();
+    @GetMapping("/selectMyQuery")
+    public ResponseEntity<List<QueryDto>> selectMyQuery() {
+        List<QueryDto> list = adminService.selectMyQuery();
         return ResponseEntity.ok(list);
     }
 
     // 1대1 문의 하나 조회
-    @GetMapping("/selectQury")
-    public ResponseEntity <QueryDto> selectQury(@RequestParam Long id) {
-        QueryDto list = adminService.selectQury(id);
+    @GetMapping("/selectQuery")
+    public ResponseEntity <QueryDto> selectQuery(@RequestParam Long id) {
+        QueryDto list = adminService.selectQuery(id);
         return ResponseEntity.ok(list);
     }
 
