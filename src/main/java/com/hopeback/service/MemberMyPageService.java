@@ -36,16 +36,19 @@ public class MemberMyPageService {
     // 회원번호 수정
     public boolean modifyMember(MemberMyPageDto memberMyPageDto) {
         try {
-                    log.warn("서비스에서 유저 정보 들어오나? {}", memberMyPageDto.getMemberId());
+            log.warn("서비스에서 유저 정보 들어오나? {}", memberMyPageDto.getMemberId(), memberMyPageDto.getNickName());
             Member member = memberRepository.findByMemberId(memberMyPageDto.getMemberId()).orElseThrow(
                     () -> new RuntimeException("회원수정 : 해당 회원이 존재하지 않습니다.")
             );
             if (memberMyPageDto.getPassword() != null) {
                 member.setPassword(memberMyPageDto.getPassword());
                 member.passwordEncode(passwordEncoder);
-            } else {
-                member.setProfile(memberMyPageDto.getProfile().isEmpty() ? member.getProfile() : memberMyPageDto.getProfile());
-//                member.setNickName(memberMyPageDto.getNickName().isEmpty() ? member.getNickName() : memberMyPageDto.getNickName());
+            }
+            if (memberMyPageDto.getProfile() != null && !memberMyPageDto.getProfile().isEmpty()) {
+                member.setProfile(memberMyPageDto.getProfile());
+            }
+            if (memberMyPageDto.getNickName() != null && !memberMyPageDto.getNickName().isEmpty()) {
+                member.setNickName(memberMyPageDto.getNickName());
             }
             memberRepository.save(member);
             return true;

@@ -28,6 +28,7 @@ public class MemberMyPageController {
     public ResponseEntity<Boolean> modifyMemberInfo(@RequestBody MemberMyPageDto memberMyPageDto) {
         boolean isTrue = memberMyPageService.modifyMember(memberMyPageDto);
         log.warn("멤버 프로필 잘 받아오나 ?? {}", memberMyPageDto.getMemberId());
+        log.warn("멤버 프로필 잘 받아오나 ?? {}", memberMyPageDto.getNickName());
         return ResponseEntity.ok(isTrue);
     }
 }
