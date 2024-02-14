@@ -56,12 +56,14 @@ public class MemberService {
 
     // 카카오 회원 가입
     public boolean kakaoSignup(MemberDto memberDto) {
-        try {String uniqueEmail = UUID.randomUUID().toString() + "@kakao.com";  // UUID : 전역적으로 고유한 값을 생성하기 위해서 사용. 중복을 피하고 고유성을 보장
+        try {
+            String uniqueEmail = UUID.randomUUID().toString() + "@kakao.com";  // UUID : 전역적으로 고유한 값을 생성하기 위해서 사용. 중복을 피하고 고유성을 보장
         Member member = Member.builder()
                 .nickName(memberDto.getNickName())
                 .name("카카오")
                 .email(uniqueEmail)
                 .password("kakaoPassword")
+                .phone("010-0000-0000")
                 .authority(memberDto.getAuthority())
                 .image(memberDto.getImage())
                 .build();
