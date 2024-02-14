@@ -89,7 +89,7 @@ public class Member {
 
     // ? extends GrantedAuthority : GrantedAuthority 인터페이스를 상속한 어떤 클래스든지 받아들일 수 있다는 의미.
     // 이를 사용하여 메서드의 반환 타입이나 매개변수의 타입을 지정할 때, 특정 클래스의 하위 클래스들을 모두 포함할 수 있도록 유연성을 확보할 수 있음.
-    public Collection<? extends GrantedAuthority> getAuthority() {
+    public Collection<? extends GrantedAuthority> getAuthority2() {
         return List.of((new SimpleGrantedAuthority("ROLE_MEMBER")));  // SimpleGrantedAuthority : 사용자에게 할당된 권한을 나타냄.
         // List.of : 불변 리스트를 생성. 요소를 추가, 제거하거나 수정하는 메서드가 제공되지 않음. 권한이 변하지 않도록 보장하기 위해 사용됨.
     }

@@ -102,7 +102,7 @@ public class MemberService {
 
         // 카카오 회원 정보를 인증 객체로 변환
         String memberId = member.getId().toString();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(memberId,"", member.getAuthority());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(memberId,"", member.getAuthority2());
 
         // 액세스 및 리프레스 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
