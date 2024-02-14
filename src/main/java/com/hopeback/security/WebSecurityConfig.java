@@ -48,6 +48,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .authorizeRequests()  // URL 패턴에 따른 접근 권한을 설정
 
                 // 특정 경로에 대해서 인증 없이 허용
+                .antMatchers("/auth/**", "/ws/**", "/test/**", "/admin/**", "/chat/**", "/elastic/**", "/refresh/**", "/myPage/**", "/email/**", "/medicine/**", "/member-info/**").permitAll()
                 .antMatchers("/auth/**", "/ws/**", "/test/**", "/admin/**", "/chat/**", "/elastic/**", "/refresh/**", "/myPage/**", "/email/**", "/medicine/**", "/member/kakaoLogin", "/event/**").permitAll()
                 .antMatchers("/admin").hasRole("ADMIN")
 

@@ -39,14 +39,6 @@ public class ChatController {
         return ResponseEntity.ok(chatService.findFreeRoom());
     }
 
-    // 채팅방 참여자 목록 가져오기
-    @GetMapping("/members/{roomId}")
-    public ResponseEntity<List<String>> getChatMembers(@PathVariable String roomId) {
-        List<String> chatMembers = chatService.getChatMembers(roomId);
-        log.info("챗 컨트롤러 채팅방 참여자 어떻게 가져오나 : {}", chatService.getChatMembers(roomId));
-        return ResponseEntity.ok(chatMembers);
-    }
-
     // 전체 채팅 내역 리스트
     @GetMapping("/chatList")
     public ResponseEntity<List<ChatMsgDto>> findAll() {return ResponseEntity.ok(chatService.findAllChat()); }
@@ -61,7 +53,7 @@ public class ChatController {
     // 메세지 저장하기
     @PostMapping("/message")
     public ResponseEntity<ChatMsgDto> saveMessage(@RequestBody ChatMsgDto chatMsgDto) {
-        chatService.saveMsg(chatMsgDto.getRoomId(), chatMsgDto.getSender(), chatMsgDto.getMsg());
+        chatService.saveMsg(chatMsgDto.getRoomId(), chatMsgDto.getSender(), chatMsgDto.getMsg(), chatMsgDto.getProfile());
         return ResponseEntity.ok(chatMsgDto);
     }
 
@@ -82,15 +74,5 @@ public class ChatController {
     public ResponseEntity<Boolean> deleteRoom(@PathVariable String roomId) {
         boolean isTrue = chatService.deleteRoom(roomId);
         return ResponseEntity.ok(isTrue);
-    }
-
-    // ============
-
-    // 카테고리별 채팅방 조회
-    @GetMapping("/chatList/{category}")
-    public ResponseEntity<List<ChatRoomResDto>> getChatListByCategory(@PathVariable String category) {
-        log.warn("카테고리 : " + category);
-        List<ChatRoomResDto> chatRooms = chatService.getChatListByCategory(category);
-        return ResponseEntity.ok(chatRooms);
     }
 }

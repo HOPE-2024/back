@@ -10,12 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface ChatRepository extends JpaRepository <Chat, Long> {
+public interface ChatRepository extends JpaRepository <Chat, String> {
     @Query(value = "SELECT * FROM chat WHERE room_id = ?1 ORDER BY sent_at DESC LIMIT 50", nativeQuery = true)
     List<Chat> findRecentMsg(String roomId);
     Page<Chat> findAllByOrderByIdDesc(Pageable pageable);
 
     Optional<List<Chat>> findByChatRoom(ChatRoom chatRoom);
 
-    Optional<Chat> findById(String chatId);
+    Optional<Chat> findById(Long chatId);
 }

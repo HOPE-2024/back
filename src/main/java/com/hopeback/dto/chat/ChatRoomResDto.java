@@ -19,6 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @NoArgsConstructor
 public class ChatRoomResDto {
+    private String category;
+    private String profile;
     private String roomId;
     private String name;
     private LocalDateTime regDate;
@@ -33,7 +35,9 @@ public class ChatRoomResDto {
     public boolean isSessionEmpty() {  return this.sessions == null || this.sessions.size() == 0;}
 
     @Builder
-    public ChatRoomResDto(String roomId, String name, LocalDateTime regDate) {
+    public ChatRoomResDto(String roomId, String name, LocalDateTime regDate, String profile, String category) {
+        this.category = category;
+        this.profile = profile;
         this.roomId = roomId;
         this.name = name;
         this.regDate = regDate;
@@ -43,19 +47,19 @@ public class ChatRoomResDto {
     public void handlerActions(WebSocketSession session, ChatMsgDto chatMsg, ChatService chatService) {
         if(chatMsg.getType() != null && chatMsg.getType().equals(ChatMsgDto.MsgType.ENTER)) {
             sessions.add(session);
-            if (chatMsg.getSender() != null) {
-                chatMsg.setMsg(chatMsg.getSender() + "님이 입장했습니다.");
-            }
+//            if (chatMsg.getSender() != null) {
+//                chatMsg.setMsg(chatMsg.getSender() + "님이 입장했습니다.");
+//            }
             log.debug("새로운 세션 추가 : " + session + "현재 세션 수 : " + sessions.size());
         } else if (chatMsg.getType() != null && chatMsg.getType().equals(ChatMsgDto.MsgType.CLOSE)) {
             sessions.remove(session);
-            if (chatMsg.getSender() != null) {
-                chatMsg.setMsg(chatMsg.getSender() + "님이 퇴장했습니다.");
-            }
+//            if (chatMsg.getSender() != null) {
+//                chatMsg.setMsg(chatMsg.getSender() + "님이 퇴장했습니다.");
+//            }
             log.debug("메세지 삭제 : " + session);
         } else {
             //입장과 퇴장이 아닌 경우 => 메세지를 보내는 경우 => 보낼 때 마다 메세지 저장
-            chatService.saveMsg(chatMsg.getRoomId(), chatMsg.getSender(), chatMsg.getMsg());
+            chatService.saveMsg(chatMsg.getRoomId(), chatMsg.getSender(), chatMsg.getMsg(), chatMsg.getProfile());
             log.debug("메세지 받음 : " + chatMsg.getMsg());
         }
         sendMsg(chatMsg, chatService);

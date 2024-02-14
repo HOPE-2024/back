@@ -82,6 +82,7 @@ public class TokenProvider {
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())  // 액세스 토큰의 만료 시간을 milliseconds로 설정.
                 .refreshToken(refreshToken)  // 리프레시 토큰 설정
                 .refreshTokenExpiresIn(refreshTokenExpiresIn.getTime())  // 리프레시 토큰의 만료 시간을 milliseconds로 설정.
+                .authority(authorities)
                 .build();
 
     }
