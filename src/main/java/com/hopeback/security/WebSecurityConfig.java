@@ -48,7 +48,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .authorizeRequests()  // URL 패턴에 따른 접근 권한을 설정
 
                 // 특정 경로에 대해서 인증 없이 허용
-                .antMatchers("/auth/**", "/ws/**", "/test/**", "/admin/**", "/chat/**", "/elastic/**", "/refresh/**", "/myPage/**", "/email/**", "/medicine/**", "/member-info/**", "/event/**").permitAll()
+                .antMatchers("/auth/**", "/ws/**", "/test/**", "/chat/**", "/elastic/**", "/refresh/**", "/myPage/**", "/email/**", "/medicine/**", "/member-info/**", "/event/**").permitAll()
+                .antMatchers("/admin/**") // admin 페이지에 대한 권한 설정
+                .hasRole("ADMIN") // 어드민 권한이 있는 사용자만 접근 허용
 
                 // Swagger 에 관련된 리소스에 대해서 인증 없이 허용
                 .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**", "/sign-api/exception").permitAll()
