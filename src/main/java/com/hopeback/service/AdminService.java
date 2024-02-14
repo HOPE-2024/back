@@ -58,7 +58,7 @@ public class AdminService {
     //모든 정지 회원 조회
     @Transactional
     public List<MemberResDto> stopChattingList() {
-        List<String> activeList = List.of("채팅 7일 정지", "채팅 30일 정지");
+        List<String> activeList = List.of("7일 정지", "30일 정지");
         List<Member> members = memberRepository.findByActiveIn(activeList);
         // Member 엔티티를 MemberResDto로 매핑하여 리스트로 반환
         return members.stream()
@@ -108,10 +108,10 @@ public class AdminService {
         );
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime sevenDaysLater =null;
-        if(memberResDto.getActive().equals("채팅 7일 정지")) {
+        if(memberResDto.getActive().equals("7일 정지")) {
             sevenDaysLater = now.plus(7, ChronoUnit.DAYS);
         }
-        if(memberResDto.getActive().equals("채팅 30일 정지")) {
+        if(memberResDto.getActive().equals("30일 정지")) {
             sevenDaysLater = now.plus(30, ChronoUnit.DAYS);
 
         }
@@ -319,13 +319,13 @@ public class AdminService {
 
     //1대1 문의 전부 출력
     public List<QueryDto> selectQueryList() {
-            List<Query> reports = queryRepository.findAll();
-            return reports.stream()
-                    .map(report -> {
-                        QueryDto queryDto = modelMapper.map(report, QueryDto.class);
-                        return queryDto;
-                    })
-                    .collect(Collectors.toList());
+        List<Query> reports = queryRepository.findAll();
+        return reports.stream()
+                .map(report -> {
+                    QueryDto queryDto = modelMapper.map(report, QueryDto.class);
+                    return queryDto;
+                })
+                .collect(Collectors.toList());
     }
 
 
@@ -530,11 +530,17 @@ public class AdminService {
 
     public List<MemberResDto> chatingMembers(int page, int size) {
         List<String> activeList = new ArrayList<>();
-        activeList.add("채팅 7일 정지");
-        activeList.add("채팅 30일 정지");
+        activeList.add("7일 정지");
+        activeList.add("30일 정지");
 
         Pageable pageable = PageRequest.of(page, size);
         List<Member> members = memberRepository.findByActiveIn(activeList, pageable);
+        log.warn(""+members);
+        log.warn(""+members);
+        log.warn(""+members);
+        log.warn(""+members);
+        log.warn(""+members);
+        log.warn(""+members);
         return members.stream()
                 .map(member -> {
                     MemberResDto memberResDto = modelMapper.map(member, MemberResDto.class);
@@ -545,7 +551,7 @@ public class AdminService {
 
     // 페이지 수 조회
     public int chatingMembersPage(Pageable pageable) {
-        int count = memberRepository.countByActiveIn(List.of("채팅 7일 정지", "채팅 30일 정지"));
+        int count = memberRepository.countByActiveIn(List.of("7일 정지", "30일 정지"));
         return (int) Math.ceil((double) count / pageable.getPageSize());
     }
 
@@ -579,7 +585,6 @@ public class AdminService {
     public List<QueryDto> oftenQuery() {
         // "처리 전" 상태에 있는 문의 글 조회
         List<Query> reports = queryRepository.findByOftenContaining("자주 하는 질문");
-
         // 조회된 각 문의 글을 QueryDto 객체로 매핑하여 리스트로 반환
         return reports.stream()
                 .map(query -> modelMapper.map(query, QueryDto.class))
