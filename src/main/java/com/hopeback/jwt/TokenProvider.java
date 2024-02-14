@@ -70,6 +70,10 @@ public class TokenProvider {
                 .compact();
 
         log.info("TOKENPRO RFTK 토큰 생성 !!: {}", refreshToken);
+        log.info("사용자 이름: {}", authentication.getName());
+        log.info("사용자 정보: {}", authentication.getPrincipal());
+        log.info("사용자 권한: {}", authentication.getAuthorities());
+
 
         // 토큰 정보를 담은 TokenDto 객체 생성
         return TokenDto.builder()
@@ -79,6 +83,7 @@ public class TokenProvider {
                 .refreshToken(refreshToken)  // 리프레시 토큰 설정
                 .refreshTokenExpiresIn(refreshTokenExpiresIn.getTime())  // 리프레시 토큰의 만료 시간을 milliseconds로 설정.
                 .build();
+
     }
 
     // 토큰 복호화 : 저장된 정보를 추출하는 과정으로 헤더+페이로드(내용)+서명으로 구성.

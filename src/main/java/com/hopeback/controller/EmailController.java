@@ -1,5 +1,6 @@
 package com.hopeback.controller;
 
+import com.hopeback.dto.member.PasswordResetDto;
 import com.hopeback.service.EmailService;
 import com.hopeback.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,14 @@ public class EmailController {
     public ResponseEntity<Boolean> checkMemberIdExists(@RequestParam("memberId") String memberid) {
         boolean exists = emailService.memberIdExists(memberid);
         return ResponseEntity.ok(exists);
+    }
+
+    // 이메일 인증 후 비밀번호 재설정
+    @PostMapping("/resetpw")
+    public ResponseEntity<Boolean>resetPassword(@RequestBody PasswordResetDto passwordResetDto) {
+        log.info("비밀번호 변경 신청한 id !! : {}", passwordResetDto.getMemberId());
+        boolean isTrue = emailService.resetPassword(passwordResetDto);
+        return ResponseEntity.ok(isTrue);
     }
 
 }

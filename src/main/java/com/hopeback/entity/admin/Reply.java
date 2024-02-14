@@ -6,23 +6,18 @@ import com.hopeback.entity.member.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reply")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 public class Reply {
     @Id
     @Column(name = "reply_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long replyId;
-
 
     // 댓글단 사람
     @JoinColumn(name = "answerer", nullable = false)

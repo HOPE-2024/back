@@ -15,7 +15,6 @@ import java.util.List;
 @Table(name = "query")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 public class Query {
     @Id
@@ -26,7 +25,9 @@ public class Query {
     @OneToOne
     @JoinColumn(name = "questioner", nullable = false)
     private Member questioner;
-
+    //질문 제목
+    @Column(name= "title",nullable = false)
+    private String title ;
     //질문 구분
     @Column(name= "division",nullable = false)
     private String division ;
@@ -38,6 +39,13 @@ public class Query {
     //질문 이미지
     @Column(name= "img")
     private String queryImg;
+
+    //자주 하는 질문 등록
+    @Column(name= "often")
+    private String often;
+
+    @Column(name= "query_status")
+    private String status;
 
     @OneToMany(mappedBy = "query", cascade = CascadeType.REMOVE)
     private List<Reply> reply;
