@@ -44,7 +44,7 @@ public class MemberService {
     // 회원 상세 조회
     public MemberResDto getMemberDetail(String memberId) {
         Member member = memberRepository.findByMemberId(memberId).orElseThrow(
-                ()-> new RuntimeException("해당 회원이 존재하지 않습니다."));
+                () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
         return convertEntityDto(member);
     }
 
@@ -56,19 +56,23 @@ public class MemberService {
 
     // 카카오 회원 가입
     public boolean kakaoSignup(MemberDto memberDto) {
+        log.warn("abcabc : " + memberDto);
+
         try {
             String uniqueEmail = UUID.randomUUID().toString() + "@kakao.com";  // UUID : 전역적으로 고유한 값을 생성하기 위해서 사용. 중복을 피하고 고유성을 보장
-        Member member = Member.builder()
-                .nickName(memberDto.getNickName())
-                .name("카카오")
-                .email(uniqueEmail)
-                .password("kakaoPassword")
-                .phone("010-0000-0000")
-                .authority(memberDto.getAuthority())
-                .image(memberDto.getImage())
-                .build();
-        memberRepository.save(member);
-        return true;
+            Member member = Member.builder()
+                    .memberId(UUID.randomUUID().toString()) // 예시로 UUID를 사용
+                    .nickName(memberDto.getNickName())
+                    .name("카카오")
+                    .email(uniqueEmail)
+                    .password("kakaoPassword")
+                    .phone("010-0000-0000")
+                    .authority(memberDto.getAuthority())
+                    .image(memberDto.getImage())
+                    .build();
+
+            memberRepository.save(member);
+            return true;
         } catch (Exception e) {
             log.warn("카카오 회원가입 오류 발생 !! : ", e);
             return false;
@@ -83,7 +87,7 @@ public class MemberService {
 
         // http 요청 헤더를 생성하여 카카오 액세스 토큰을 설정
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer" + kakaoToken);
+        headers.add("Authorization", "Bearer " + kakaoToken);
 
         // RestTemplate : 외부 API와 통실할 때 사용. RESTful 서비스와 상호 작용하거나, 외부 서비스와 데이터를 교환할 때 사용하여 HTTP 통신 처리.
         RestTemplate restTemplate = new RestTemplate();
@@ -104,7 +108,7 @@ public class MemberService {
 
         // 카카오 회원 정보를 인증 객체로 변환
         String memberId = member.getId().toString();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(memberId,"", member.getAuthority2());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(memberId, "", member.getAuthority2());
 
         // 액세스 및 리프레스 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
@@ -113,24 +117,20 @@ public class MemberService {
                 .findByMember(member)
                 .orElse(null);
         // 리프레시 토큰이 없으면 새로 생성하여 저장
-        if(retrievedRefreshToken == null) {
+        if (retrievedRefreshToken == null) {
             RefreshToken newRefreshToken = RefreshToken.builder()
                     .refreshToken(tokenDto.getRefreshToken())
                     .refreshTokenExpiresIn(tokenDto.getRefreshTokenExpiresIn())
                     .member(member)
                     .build();
             refreshTokenRepository.save(newRefreshToken);
-        }else {  // 이미 리프레시 토큰이 있으면 업데이트
+        } else {  // 이미 리프레시 토큰이 있으면 업데이트
             log.warn("kakaoLogin시 해당 회원 앞으로 받은 리프레시 토큰 확인 : {}", retrievedRefreshToken.getRefreshToken());
             retrievedRefreshToken.update(tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpiresIn());
         }
         log.warn("MemberService kakaoLogin 반환되는 토큰은 : " + objectMapper.writeValueAsString(tokenDto));
         return tokenDto;
     }
-
-
-
-
 
 
     // 회원 엔티티를 회원 DTO로 변환

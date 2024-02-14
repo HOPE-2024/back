@@ -43,8 +43,16 @@ public class MemberController {
         // json은 키-값 쌍으로 구성된 데이터를 표현. object 타입을 사용함으로써 다양한 데이터 타입을 유연하게 처리할 수 있음.
         // 따라서 Map<String, Object> 타입은 JSON 형식의 데이터를 매개변수로 받기 위해 사용되며, 다양한 키와 그에 해당하는 값을 동적으로 처리할 수 있는 유연성을 제공.
 
+        log.warn("zzz" + kakaoData);
+        log.warn("kakaoData 타입: " + kakaoData.getClass().getName());
+
         // "access_token" 이라는 이름의 key는 OAuth2.0 인증 방식에서 사용하는 표준 키
-        String kakaoToken = (String) kakaoData.get("access_token");
+        Map<String, Object> nestedMap = (Map<String, Object>) kakaoData.get("kakaoData");
+        String kakaoToken = "";
+        if (nestedMap != null) {
+            kakaoToken = (String) nestedMap.get("access_token");
+            log.warn("ㅎㅎㅎㅎㅎ : " + kakaoToken);
+        }
 
         if (kakaoToken == null || kakaoToken.isEmpty()) {
             log.error("controller kakaoLogin Null!!!");
