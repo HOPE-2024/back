@@ -101,10 +101,12 @@ public class ChatService {
                 .roomId(randomId)
                 .name(chatRoomDto.getName())
                 .regDate(LocalDateTime.now())
+                .category(chatRoomDto.getCategory())
                 .build();
         chatRoomEntity.setRoomId(randomId);
         chatRoomEntity.setRoomName(chatRoomDto.getName());
         chatRoomEntity.setCreatedAt(LocalDateTime.now());
+        chatRoomEntity.setCategory(chatRoomDto.getCategory());
         chatRoomRepository.save(chatRoomEntity);
         chatRooms.put(randomId, chatRoom);
         return chatRoom;
@@ -170,6 +172,7 @@ public class ChatService {
         chatRoomResDto.setRoomId(chatRoom.getRoomId());
         chatRoomResDto.setName(chatRoom.getRoomName());
         chatRoomResDto.setCreatedAt(chatRoom.getCreatedAt());
+        chatRoomResDto.setCategory(chatRoom.getCategory());
         return chatRoomResDto;
     }
 
