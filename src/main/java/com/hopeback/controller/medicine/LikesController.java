@@ -19,7 +19,7 @@ public class LikesController {
     private final LikesService likesService;
 
     // 한 회원의 특정 의약품 즐겨찾기 여부 조회
-    @GetMapping("/getLikes")
+    @PostMapping("/getLikes")
     public ResponseEntity<Boolean> getLikes (@RequestBody LikesDto likesDto) {
         boolean isTrue = likesService.getLikes(likesDto);
         return ResponseEntity.ok(isTrue);

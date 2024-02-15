@@ -2,19 +2,20 @@ package com.hopeback.controller.medicine;
 
 //import com.hopeback.entity.medicine.MedicineData;
 //import com.hopeback.service.medicine.MedicineService;
+import com.hopeback.dto.Medicine.MedicineDataDto;
 import com.hopeback.entity.medicine.MedicineData;
 import com.hopeback.service.medicine.MedicineDataService;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,8 +50,36 @@ public class MedicineDataController {
         return ResponseEntity.ok(data);
     }
 
-    @GetMapping("/searchId")
+    // Id를 이용하여 검색
+    @GetMapping("/search-id")
     public ResponseEntity<SearchResponse> searchById(@RequestParam String documentId) throws IOException {
         return ResponseEntity.ok(medicineDataService.searchById(documentId));
+    }
+
+    // 색인
+    @PostMapping("/add")
+    public ResponseEntity<IndexResponse> addData(@RequestBody MedicineDataDto medicineDataDto) throws IOException {
+        System.out.println("medicineDataDtoCon : " + medicineDataDto.getName());
+        return ResponseEntity.ok(medicineDataService.addData(medicineDataDto));
+    }
+
+    // 삭제 (documentId를 이용)
+    @DeleteMapping("/delete")
+    public ResponseEntity<DeleteResponse> deleteData(@RequestParam String documentId) throws IOException {
+        System.out.println("delete : "+ documentId);
+        return ResponseEntity.ok(medicineDataService.deleteData(documentId));
+    }
+
+    // 검색어 저장
+    @PostMapping("/add-search-log")
+    public ResponseEntity<IndexResponse> addSearchLog(@RequestParam String keyword) throws IOException {
+        System.out.print("keyword : " + keyword);
+        return ResponseEntity.ok(medicineDataService.addSearchLog(keyword));
+    }
+
+    // 검색어 빈도 집계
+    @GetMapping("/get-search-log")
+    public ResponseEntity<List<Map<String, Object>>> getSearchLog() throws IOException {
+        return ResponseEntity.ok(medicineDataService.getSearchLog());
     }
 }
