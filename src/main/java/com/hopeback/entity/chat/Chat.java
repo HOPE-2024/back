@@ -24,6 +24,9 @@ public class Chat {
     @Column(name = "profile")
     private String profile;
 
+    @Column(name = "nickName")
+    private String nickName;
+
     @Column(name = "msg")
     private String msg;
 

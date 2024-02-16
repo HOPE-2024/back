@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatRoomResDto {
     private String category;
     private String profile;
+    private String nickName;
     private String roomId;
     private String name;
     private LocalDateTime regDate;
@@ -35,9 +36,10 @@ public class ChatRoomResDto {
     public boolean isSessionEmpty() {  return this.sessions == null || this.sessions.size() == 0;}
 
     @Builder
-    public ChatRoomResDto(String roomId, String name, LocalDateTime regDate, String profile, String category) {
+    public ChatRoomResDto(String roomId, String name, LocalDateTime regDate, String profile, String nickName, String category) {
         this.category = category;
         this.profile = profile;
+        this.nickName = nickName;
         this.roomId = roomId;
         this.name = name;
         this.regDate = regDate;
@@ -59,7 +61,7 @@ public class ChatRoomResDto {
             log.debug("메세지 삭제 : " + session);
         } else {
             //입장과 퇴장이 아닌 경우 => 메세지를 보내는 경우 => 보낼 때 마다 메세지 저장
-            chatService.saveMsg(chatMsg.getRoomId(), chatMsg.getSender(), chatMsg.getMsg(), chatMsg.getProfile());
+            chatService.saveMsg(chatMsg.getRoomId(), chatMsg.getSender(), chatMsg.getMsg(), chatMsg.getProfile(), chatMsg.getNickName());
             log.debug("메세지 받음 : " + chatMsg.getMsg());
         }
         sendMsg(chatMsg, chatService);

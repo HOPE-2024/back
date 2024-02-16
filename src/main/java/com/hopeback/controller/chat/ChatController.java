@@ -53,7 +53,7 @@ public class ChatController {
     // 메세지 저장하기
     @PostMapping("/message")
     public ResponseEntity<ChatMsgDto> saveMessage(@RequestBody ChatMsgDto chatMsgDto) {
-        chatService.saveMsg(chatMsgDto.getRoomId(), chatMsgDto.getSender(), chatMsgDto.getMsg(), chatMsgDto.getProfile());
+        chatService.saveMsg(chatMsgDto.getRoomId(), chatMsgDto.getSender(), chatMsgDto.getMsg(), chatMsgDto.getProfile(),chatMsgDto.getNickName());
         return ResponseEntity.ok(chatMsgDto);
     }
 

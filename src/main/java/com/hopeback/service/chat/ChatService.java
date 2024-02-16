@@ -154,13 +154,14 @@ public class ChatService {
 
 
     //채팅 메세지 데이터베이스 저장하기
-    public void saveMsg(String roomId, String sender, String msg, String profile) {
+    public void saveMsg(String roomId, String sender, String msg, String profile, String nickName) {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new RuntimeException("해당 채팅방이 존재하지 않습니다."));
         Chat chatMsg = new Chat();
         chatMsg.setChatRoom(chatRoom);
         chatMsg.setSender(sender);
         chatMsg.setMsg(msg);
         chatMsg.setProfile(profile);
+        chatMsg.setNickName(nickName);
         chatMsg.setSentAt(LocalDateTime.now());
         chatMsg.setActive("active");
         chatRepository.save(chatMsg);
@@ -182,6 +183,7 @@ public class ChatService {
         chatMsgDto.setId(chat.getId());
         chatMsgDto.setRoomId(chat.getChatRoom().getRoomId());
         chatMsgDto.setProfile(chat.getProfile());
+        chatMsgDto.setNickName(chat.getNickName());
         chatMsgDto.setMsg(chat.getMsg());
         chatMsgDto.setActive(chat.getActive());
         chatMsgDto.setSender(chat.getSender());

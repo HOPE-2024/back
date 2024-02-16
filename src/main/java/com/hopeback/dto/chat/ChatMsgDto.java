@@ -13,6 +13,7 @@ public class ChatMsgDto {
     private Long id;
     private String roomId;
     private String profile;
+    private String nickName;
     private String sender;
     private String msg;
     private String active;
