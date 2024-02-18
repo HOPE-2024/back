@@ -14,4 +14,5 @@ public class MemberInfoDto {
     private LocalDate birthDate;
     private Double height;
     private Double weight;
+    private Double bmi;
 }

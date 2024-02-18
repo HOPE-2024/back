@@ -28,4 +28,7 @@ public class MemberInfo {
 
     @Column(name = "weight")
     private Double weight;
+
+    @Column(name = "bmi")
+    private Double bmi;
 }

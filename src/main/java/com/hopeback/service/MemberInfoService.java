@@ -45,6 +45,7 @@ public class MemberInfoService {
             memberInfo.setBirthDate(memberInfoDto.getBirthDate() != null ? memberInfoDto.getBirthDate() : memberInfo.getBirthDate());
             memberInfo.setHeight(memberInfoDto.getHeight() != null ? memberInfoDto.getHeight() : memberInfo.getHeight());
             memberInfo.setWeight(memberInfoDto.getWeight() != null ? memberInfoDto.getWeight() : memberInfo.getWeight());
+            memberInfo.setBmi(memberInfoDto.getBmi() != null ? memberInfoDto.getBmi() : memberInfo.getBmi());
 
             // Save updated member info
             memberInfoRepository.save(memberInfo);
@@ -62,6 +63,7 @@ public class MemberInfoService {
         memberInfoDto.setBirthDate(memberInfo.getBirthDate());
         memberInfoDto.setHeight(memberInfo.getHeight());
         memberInfoDto.setWeight(memberInfo.getWeight());
+        memberInfoDto.setBmi(memberInfo.getBmi());
         return memberInfoDto;
     }
 }
