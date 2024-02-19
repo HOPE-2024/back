@@ -19,9 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -51,7 +48,7 @@ public class AuthService {
     }
 
     // 회원 가입
-    public MemberResDto signup(MemberReqDto memberReqDto) {
+    public MemberResDto signup(MemberReqDto memberReqDto, String verificationCode) {
         if (memberRepository.existsByMemberId(memberReqDto.getMemberId())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다.");
         }
