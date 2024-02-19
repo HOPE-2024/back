@@ -22,6 +22,7 @@ import java.util.Map;
 public class MemberController {
     private final MemberService memberService;
     private final MemberDto memberDto;
+//    private final NaverService naverService;
 
     @Autowired   // Autowired : 필드, 생성자, 세터 메서드에 해당하는 타입의 빈을 찾아 자동으로 주입
     public MemberController(MemberService memberService, MemberDto memberDto) {
@@ -43,7 +44,6 @@ public class MemberController {
         // json은 키-값 쌍으로 구성된 데이터를 표현. object 타입을 사용함으로써 다양한 데이터 타입을 유연하게 처리할 수 있음.
         // 따라서 Map<String, Object> 타입은 JSON 형식의 데이터를 매개변수로 받기 위해 사용되며, 다양한 키와 그에 해당하는 값을 동적으로 처리할 수 있는 유연성을 제공.
 
-        log.warn("zzz" + kakaoData);
         log.warn("kakaoData 타입: " + kakaoData.getClass().getName());
 
         // "access_token" 이라는 이름의 key는 OAuth2.0 인증 방식에서 사용하는 표준 키
@@ -51,7 +51,7 @@ public class MemberController {
         String kakaoToken = "";
         if (nestedMap != null) {
             kakaoToken = (String) nestedMap.get("access_token");
-            log.warn("ㅎㅎㅎㅎㅎ : " + kakaoToken);
+            log.warn("카카오 액세스 토큰 : " + kakaoToken);
         }
 
         if (kakaoToken == null || kakaoToken.isEmpty()) {
@@ -81,5 +81,25 @@ public class MemberController {
         TokenDto token = memberService.kakaoLogin(kakaoNickName);
         return ResponseEntity.ok(token);
     }
+
+//    // 네이버 로그인
+//    @PostMapping("/naverlogin")
+//    public void naverLogin(HttpServletRequest request, HttpServletResponse response) throws MalformedURLException, UnsupportedEncodingException, URISyntaxException {
+//            String url = memberService.getNaverAuthorizeUrl("authorize");
+//            try {
+//                response.sendRedirect(url);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//    }
+
+    // 네이버 회원가입 여부
+//    @PostMapping("/navermember")
+//    public ResponseEntity<Map<String, Object>> naverMember(@RequestBody String naverToken) {
+//        log.info("네이버 토큰 : {}", naverToken);
+//        Map<String, Object> response = naverService.naverInfo(naverToken);
+//        log.warn("naver rsp : {}", response);
+//        return ResponseEntity.ok(response);
+//    }
 
 }
