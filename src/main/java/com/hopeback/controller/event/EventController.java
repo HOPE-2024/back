@@ -22,7 +22,7 @@ public class EventController {
 
     @GetMapping
     public ResponseEntity<List<EventDto>> getAllEvents() {
-        List<EventDto> events = eventService.findAllEvents();
+        List<EventDto> events = eventService.findEventsByMemberId();
         return ResponseEntity.ok(events);
     }
 
@@ -33,7 +33,7 @@ public class EventController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteEvent(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
     }

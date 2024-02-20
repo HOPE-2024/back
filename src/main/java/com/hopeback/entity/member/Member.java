@@ -10,13 +10,16 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "member")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Member {
+public class Member implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
