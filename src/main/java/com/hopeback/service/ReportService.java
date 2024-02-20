@@ -61,7 +61,7 @@ public class ReportService {
             String memberId = SecurityUtil.getCurrentMemberId();
             Member member = memberRepository.findByMemberId(memberId).orElseThrow(
                     () -> new RuntimeException("해당 회원이 존재하지 않습니다."));
-            Member member2 = memberRepository.findByNickName(reportDto.getReporter().getNickName())
+            Member member2 = memberRepository.findByMemberId(reportDto.getReporter().getNickName())
                     .orElseThrow(() -> new RuntimeException("해당 회원이 존재하지 않습니다."));
 
 
