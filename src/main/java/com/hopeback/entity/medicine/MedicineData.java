@@ -70,4 +70,7 @@ public class MedicineData {
 
     @Field(name = "precautions", type = FieldType.Text)
     private String precautions;
+
+    @Field(name = "precautions", type = FieldType.Text)
+    private String path;
 }

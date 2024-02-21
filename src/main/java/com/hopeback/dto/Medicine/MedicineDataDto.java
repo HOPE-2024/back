@@ -30,4 +30,5 @@ public class MedicineDataDto {
     private String effect;
     private String usages;
     private String precautions;
+    private String path;
 }
